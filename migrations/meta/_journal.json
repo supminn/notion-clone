@@ -15,6 +15,13 @@
       "when": 1702479280777,
       "tag": "0001_strong_solo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1702480029570,
+      "tag": "0002_overjoyed_scalphunter",
+      "breakpoints": true
     }
   ]
 }
