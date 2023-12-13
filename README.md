@@ -36,3 +36,5 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 Following the [Web Prodigies](https://www.youtube.com/watch?v=A3l6YYkXzzg) tutorial
+
+We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to create components for our application
