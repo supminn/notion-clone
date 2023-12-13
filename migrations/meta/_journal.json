@@ -8,6 +8,13 @@
       "when": 1702478330225,
       "tag": "0000_serious_selene",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1702479280777,
+      "tag": "0001_strong_solo",
+      "breakpoints": true
     }
   ]
 }
