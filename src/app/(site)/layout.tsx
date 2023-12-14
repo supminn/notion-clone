@@ -1,8 +1,8 @@
 import React from 'react'
 
-const HomePageLayout = () => {
+const HomePageLayout = ({children}:{children: React.ReactNode}) => {
   return (
-    <div>HomePageLayout</div>
+    <main>{children}</main>
   )
 }
 

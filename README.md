@@ -38,3 +38,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 Following the [Web Prodigies](https://www.youtube.com/watch?v=A3l6YYkXzzg) tutorial
 
 We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to create components for our application
+
+- [Button](https://youtu.be/A3l6YYkXzzg?t=2585) not defined while referencing it
