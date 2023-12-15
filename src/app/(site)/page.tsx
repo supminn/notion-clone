@@ -4,17 +4,20 @@ import React from "react";
 import Banner from "../../../public/appBanner.png";
 import Cal from "../../../public/cal.png";
 import { Button } from "@/components/ui/Button";
-import { CLIENTS, USERS } from "@/lib/contants";
+import { CLIENTS, PRICING_CARDS, PRICING_PLANS, USERS } from "@/lib/contants";
 import { randomUUID } from "crypto";
 // twMerge: Utility function to efficiently merge Tailwind CSS classes in JS without style conflicts.
 import { twMerge } from "tailwind-merge";
 // clsx: Conditionally apply CSS classes based on certain conditions or arguments.
 import clsx from "clsx";
 import CustomCard from "@/components/landingPage/CustomCard";
-// Components created by supminn
+// Components created by Supminn
 import {
-  CardHeaderAsProp,
-  CardContentAsProp,
+  TestimonialCardHeader,
+  TestimonialCardContent,
+  PricingCardHeader,
+  PricingCardFooter,
+  PricingCardContent,
 } from "@/components/landingPage/CardDetailsAsProp";
 
 const HomePage = () => {
@@ -221,14 +224,64 @@ const HomePage = () => {
                   dark:from-border
                   dark:to-background"
                   cardHeader={
-                    <CardHeaderAsProp name={testimonial.name} index={index} />
+                    <TestimonialCardHeader
+                      name={testimonial.name}
+                      index={index}
+                    />
                   }
                   cardContent={
-                    <CardContentAsProp message={testimonial.message} />
+                    <TestimonialCardContent message={testimonial.message} />
                   }
                 />
               ))}
             </div>
+          ))}
+        </div>
+      </section>
+      <section
+        className="mt-20
+        px-4
+        sm:px-6"
+      >
+        <TitleSection
+          title="The Perfect Plan For You"
+          subHeading="Experience all the benefits of our platform. Select a plan that suits your needs and take your productivity to new heights."
+          pill="Pricing"
+        />
+        <div
+          className="flex
+          flex-col-reverse
+          sm:flex-row
+          gap-4
+          justify-center
+          sm:items-stretch
+          items-center mt-10"
+        >
+          {PRICING_CARDS.map((card) => (
+            <CustomCard
+              key={card.planType}
+              className={clsx(
+                "w-[300px] rounded-2xl dark:bg-black/40 background-blur-3xl relative",
+                {
+                  "border-brand-primaryPurple/70":
+                    card.planType === PRICING_PLANS.pro,
+                }
+              )}
+              cardHeader={<PricingCardHeader planType={card.planType} />}
+              cardContent={
+                <PricingCardContent
+                  description={card.description}
+                  price={card.price}
+                  planType={card.planType}
+                />
+              }
+              cardFooter={
+                <PricingCardFooter
+                  highlightFeature={card.highlightFeature}
+                  features={card.features}
+                />
+              }
+            />
           ))}
         </div>
       </section>
