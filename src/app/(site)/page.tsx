@@ -4,7 +4,18 @@ import React from "react";
 import Banner from "../../../public/appBanner.png";
 import Cal from "../../../public/cal.png";
 import { Button } from "@/components/ui/Button";
-import { CLIENTS } from "@/lib/contants";
+import { CLIENTS, USERS } from "@/lib/contants";
+import { randomUUID } from "crypto";
+// twMerge: Utility function to efficiently merge Tailwind CSS classes in JS without style conflicts.
+import { twMerge } from "tailwind-merge";
+// clsx: Conditionally apply CSS classes based on certain conditions or arguments.
+import clsx from "clsx";
+import CustomCard from "@/components/landingPage/CustomCard";
+// Components created by supminn
+import {
+  CardHeaderAsProp,
+  CardContentAsProp,
+} from "@/components/landingPage/CardDetailsAsProp";
 
 const HomePage = () => {
   return (
@@ -35,7 +46,7 @@ const HomePage = () => {
           sm:w-[300px]"
         >
           <Button
-            variant="btn-secondary"
+            variant="secondary"
             className=" w-full
             rounded-[10px]
             p-6
@@ -135,7 +146,8 @@ const HomePage = () => {
         flex-col
         relative"
       >
-        {/* <div
+        {/* The gradient glow on the next TileSection */}
+        <div
           className="w-[30%]
           blur-[120px]
           rounded-full
@@ -144,7 +156,7 @@ const HomePage = () => {
         bg-brand-primaryPurple/50
           -z-10
           top-22"
-        /> */}
+        />
         <TitleSection
           title="Keep track of your meetings all in one place"
           subHeading="Capture your ideas, thoughts, and meeting notes in a structured and organized manner."
@@ -166,7 +178,8 @@ const HomePage = () => {
         </div>
       </section>
       <section className="relative">
-        {/* <div
+        {/* Purple gradient background on Testimonials */}
+        <div
           className="w-full
           blur-[120px]
           rounded-full
@@ -175,7 +188,7 @@ const HomePage = () => {
         bg-brand-primaryPurple/50
           -z-10
           top-56"
-        /> */}
+        />
         <div className="mt-20 px-4 sm:px-6 flex flex-col overflow-x-hidden overflow-visible">
           <TitleSection
             title="Trusted by all"
@@ -183,6 +196,40 @@ const HomePage = () => {
             personal and professional productivity needs."
             pill="Testimonials"
           />
+          {[...Array(2)].map((arr, index) => (
+            <div
+              key={randomUUID()}
+              className={twMerge(
+                clsx(
+                  "mt-10 flex flex-norwap gap-6 self-start animate-[slide_250s_linear_infinite]",
+                  {
+                    "flex-row-reverse": index === 1,
+                    "animate-[slide_250s_linear_infinite_reverse]": index === 1,
+                    "ml-[100vw]": index === 1,
+                  }
+                ),
+                "hover:paused"
+              )}
+            >
+              {USERS.map((testimonial, index) => (
+                <CustomCard
+                  key={testimonial.name}
+                  className="w-[500px]
+                  shrink-0
+                  rounded-xl
+                  dark:bg-gradient-to-t
+                  dark:from-border
+                  dark:to-background"
+                  cardHeader={
+                    <CardHeaderAsProp name={testimonial.name} index={index} />
+                  }
+                  cardContent={
+                    <CardContentAsProp message={testimonial.message} />
+                  }
+                />
+              ))}
+            </div>
+          ))}
         </div>
       </section>
     </>
