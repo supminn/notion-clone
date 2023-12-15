@@ -35,6 +35,8 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
+# My Notes
+
 Following the [Web Prodigies](https://www.youtube.com/watch?v=A3l6YYkXzzg) tutorial
 
 We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to create components for our application
@@ -43,8 +45,8 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 ## My Learnings
 
 - How to add background gradient colors for containers
-- twMerge merges various TailwindCSS configs without any conflicts
-- clsx takes various types of input (including conditional classNames) and creates a string of classNames. Very handy in this app for testimonials
+- `twMerge` merges various TailwindCSS configs without any conflicts
+- `clsx` takes various types of input (including conditional classNames) and creates a string of classNames. Very handy in this app for testimonials
 - [...Array(2).map] is added to repeat the same set twice.
 - `npx shadcn-ui` components will automatically import from radix and add the Component in `/components/ui` folder
 - Revised how to create and define TypeScript types `/components/landingPage/CardDetailsAsProp`
