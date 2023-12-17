@@ -19,6 +19,7 @@ import Logo from "../../../../public/logo.svg";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/global/Loader";
+import { actionLoginUser } from "@/lib/server-actions/auth-actions";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -31,7 +32,15 @@ const LoginPage = () => {
   const isLoading = form.formState.isSubmitting;
   const onSubmit: SubmitHandler<zod.infer<typeof FormSchema>> = async (
     formData
-  ) => {};
+  ) => {
+    const { error } = await actionLoginUser(formData);
+    if (error) {
+      form.reset();
+      setSubmitError(error.message);
+    }
+    router.replace("/dashboard");
+  };
+
   return (
     <Form {...form}>
       <form
