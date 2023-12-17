@@ -50,3 +50,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - [...Array(2).map] is added to repeat the same set twice.
 - `npx shadcn-ui` components will automatically import from radix and add the Component in `/components/ui` folder
 - Revised how to create and define TypeScript types `/components/landingPage/CardDetailsAsProp`
+- Zod is a TypeScript-first schema validation with static type inference. We use it with react-hook-form
+- A template.tsx file is similar to a layout.tsx in that it wraps each child layout or page. Unlike layouts that persist across routes and maintain state, templates create a new instance for each of their children on navigation.
+- Next.js **Server Actions** are focused on handling server-side tasks such as data updates and form submissions, providing a seamless RPC experience, while React Server Components (RSC) are designed to optimize the user experience by allowing UI rendering and caching on the server, with a focus on reducing the client-side JavaScript bundle and improving performance.
+- leading-snug --> line-height: 1.375;
