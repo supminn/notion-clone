@@ -1,11 +1,11 @@
 import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { CardContent, CardDescription, CardTitle } from "../ui/card";
 import { PRICING_PLANS } from "@/lib/contants";
 import Diamond from "../../../public/icons/diamond.svg";
 import Check from "../../../public/icons/check.svg";
 import Image from "next/image";
-import { Button } from "../ui/Button";
+import { Button } from "../ui/button";
 
 type TestimonalCardHeaderProps = {
   name: string;
