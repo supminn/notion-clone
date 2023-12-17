@@ -3,7 +3,7 @@ import Image from "next/image";
 import React from "react";
 import Banner from "../../../public/appBanner.png";
 import Cal from "../../../public/cal.png";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { CLIENTS, PRICING_CARDS, PRICING_PLANS, USERS } from "@/lib/contants";
 import { randomUUID } from "crypto";
 // twMerge: Utility function to efficiently merge Tailwind CSS classes in JS without style conflicts.
