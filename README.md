@@ -40,7 +40,19 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 Following the [Web Prodigies](https://www.youtube.com/watch?v=A3l6YYkXzzg) tutorial
 
 We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to create components for our application
-[Button](https://youtu.be/A3l6YYkXzzg?t=2585) is not defined while referencing it. --> Shadcn UI component
+
+## Issues faced
+
+- [Button](https://youtu.be/A3l6YYkXzzg?t=2585) is not defined while referencing it. --> Shadcn UI component
+- [Timestamp 2:37:00](https://youtu.be/A3l6YYkXzzg?t=9428) to generate TypeScript types from supabase. It is no longer supported in the UI.
+  > Steps to generate types
+  ```bash
+      $: yarn add supabase -d
+      $: yarn supabase login
+      open the link and login into your account; a token is generated
+      $: yarn supabase gen types typescript --project-id=[your-project-ref] --schema=storage,public > src/lib/supabase/supabase.types.ts
+      Change your-project-ref; It will create the types within the mentioned file
+  ```
 
 ## My Learnings
 
