@@ -35,6 +35,10 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
+---
+
+---
+
 # My Notes
 
 Following the [Web Prodigies](https://www.youtube.com/watch?v=A3l6YYkXzzg) tutorial
@@ -66,3 +70,5 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - A template.tsx file is similar to a layout.tsx in that it wraps each child layout or page. Unlike layouts that persist across routes and maintain state, templates create a new instance for each of their children on navigation.
 - Next.js **Server Actions** are focused on handling server-side tasks such as data updates and form submissions, providing a seamless RPC experience, while React Server Components (RSC) are designed to optimize the user experience by allowing UI rendering and caching on the server, with a focus on reducing the client-side JavaScript bundle and improving performance.
 - leading-snug --> line-height: 1.375;
+- The `InferSelectModel` function, as the name suggests, infers or deduces the SELECT statement based on the model's structure or schema.
+- next/dynamic is a composite of React.lazy() and Suspense. It behaves the same way in the app and pages directories to allow for incremental migration.
