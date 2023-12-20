@@ -42,6 +42,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 # My Notes
 
 Following the [Web Prodigies](https://www.youtube.com/watch?v=A3l6YYkXzzg) tutorial
+[Github repo](https://github.com/webprodigies/webprodigies-cypress/tree/main)
+
+> Alternative resource
+> [Code with Antonio](https://www.youtube.com/watch?v=0OaDyjB9Ib8) > [Github repo](https://github.com/AntonioErdeljac/notion-clone-tutorial)
 
 We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to create components for our application
 
