@@ -57,6 +57,9 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
       $: yarn supabase gen types typescript --project-id=[your-project-ref] --schema=storage,public > src/lib/supabase/supabase.types.ts
       Change your-project-ref; It will create the types within the mentioned file
   ```
+  - After this step, when we linked subscription data from `dashboard/page.tsx` to `DashboardSetup` the page refresh was breaking.
+    Commenting out `migrateDb()` from `db` file fixed the above issue
+  - [onSubmitHandler](https://youtu.be/A3l6YYkXzzg?t=10646) code was not added.
 
 ## My Learnings
 
