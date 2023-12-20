@@ -5,7 +5,7 @@ import Banner from "../../../public/appBanner.png";
 import Cal from "../../../public/cal.png";
 import { Button } from "@/components/ui/button";
 import { CLIENTS, PRICING_CARDS, PRICING_PLANS, USERS } from "@/lib/contants";
-import { randomUUID } from "crypto";
+import { v4 } from "uuid";
 // twMerge: Utility function to efficiently merge Tailwind CSS classes in JS without style conflicts.
 import { twMerge } from "tailwind-merge";
 // clsx: Conditionally apply CSS classes based on certain conditions or arguments.
@@ -201,7 +201,7 @@ const HomePage = () => {
           />
           {[...Array(2)].map((arr, index) => (
             <div
-              key={randomUUID()}
+              key={v4()}
               className={twMerge(
                 clsx(
                   "mt-10 flex flex-norwap gap-6 self-start animate-[slide_250s_linear_infinite]",
