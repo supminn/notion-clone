@@ -123,7 +123,7 @@ const WorkspaceCreator = () => {
         <div>
           <CollaboratorSearch
             existingCollaborators={collaborators}
-            getCollaborator={(user) => addCollaborator(user)}
+            addCollaborator={addCollaborator}
           >
             <Button type="button" className="text-sm mt-4">
               <Plus />

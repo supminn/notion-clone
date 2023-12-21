@@ -19,12 +19,12 @@ import { Button } from "../ui/button";
 
 interface CollaboratorSearchProps {
   existingCollaborators: User[] | [];
-  getCollaborator: (collaborator: User) => void;
+  addCollaborator: (collaborator: User) => void;
   children: React.ReactNode;
 }
 const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
   existingCollaborators,
-  getCollaborator,
+  addCollaborator,
   children,
 }) => {
   const [searchResults, setSearchResults] = useState<User[] | []>([]);
@@ -38,9 +38,6 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
   }, []);
 
   const onChangeHandler = () => {};
-  const addCollaborator = (user: User) => {
-    getCollaborator(user);
-  };
 
   return (
     <Sheet>
