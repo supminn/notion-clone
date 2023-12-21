@@ -1,13 +1,11 @@
 "use client";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 import { User } from "@/lib/supabase/supabase.types";
-import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Label } from "../ui/label";
 
 const WorkspaceCreator = () => {
   const { user } = useSupabaseUser();
-  const router = useRouter();
   const [permissions, setPermissions] = useState("private");
   const [title, setTitle] = useState("");
   const [collaborators, setCollaborators] = useState<User[]>([]);
