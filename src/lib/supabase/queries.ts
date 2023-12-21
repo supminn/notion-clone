@@ -1,11 +1,16 @@
 "use server";
 
 import { validate } from "uuid";
-import { files, folders, users, workspaces } from "../../../migrations/schema";
+import {
+  files,
+  folders,
+  users,
+  workspaces,
+  collaborators,
+} from "../../../migrations/schema";
 import db from "./db";
 import { File, Folder, Subscription, Workspace } from "./supabase.types";
 import { and, eq, notExists } from "drizzle-orm";
-import { collaborators } from "./schema";
 
 export const getUserSubscriptionStatus = async (userId: string) => {
   try {
