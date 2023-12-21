@@ -9,7 +9,7 @@ import {
   collaborators,
 } from "../../../migrations/schema";
 import db from "./db";
-import { File, Folder, Subscription, Workspace } from "./supabase.types";
+import { File, Folder, Subscription, User, Workspace } from "./supabase.types";
 import { and, eq, notExists } from "drizzle-orm";
 
 export const getUserSubscriptionStatus = async (userId: string) => {
@@ -135,4 +135,15 @@ export const getSharedWorkspaces = async (userId: string) => {
     .innerJoin(collaborators, eq(workspaces.id, collaborators.workspaceId))
     .where(eq(workspaces.workspaceOwner, userId))) as Workspace[];
   return sharedWorkspaces;
+};
+
+export const addCollaborators = async (users: User[], workspaceId: string) => {
+  const response = users.forEach(async (user: User) => {
+    const userExists = await db.query.collaborators.findFirst({
+      where: (dbUser, { eq }) =>
+        and(eq(dbUser.userId, user.id), eq(dbUser.workspaceId, workspaceId)),
+    });
+    if (!userExists)
+      await db.insert(collaborators).values({ workspaceId, userId: user.id });
+  });
 };

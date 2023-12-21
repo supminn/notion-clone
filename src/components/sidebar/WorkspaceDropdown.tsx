@@ -126,7 +126,7 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
                 p-2
                 w-full"
               >
-                <article className="text-slate-500 rounded-full bg-slate-800 flex justify-center items-center">
+                <article className="text-slate-500 px-2 rounded-full bg-slate-800 flex justify-center items-center">
                   +
                 </article>
                 Create Workspace
