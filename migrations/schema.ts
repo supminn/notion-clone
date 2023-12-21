@@ -60,7 +60,9 @@ export const workspaces = pgTable("workspaces", {
   createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "string",
-  }).notNull(),
+  })
+    .defaultNow()
+    .notNull(),
   workspaceOwner: uuid("workspace_owner").notNull(),
   title: text("title").notNull(),
   iconId: text("icon_id").notNull(),
@@ -75,7 +77,9 @@ export const folders = pgTable("folders", {
   createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "string",
-  }).notNull(),
+  })
+    .defaultNow()
+    .notNull(),
   workspaceOwner: uuid("workspace_owner").notNull(),
   title: text("title").notNull(),
   iconId: text("icon_id").notNull(),
@@ -92,7 +96,9 @@ export const files = pgTable("files", {
   createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "string",
-  }).notNull(),
+  })
+    .defaultNow()
+    .notNull(),
   workspaceOwner: uuid("workspace_owner").notNull(),
   title: text("title").notNull(),
   iconId: text("icon_id").notNull(),

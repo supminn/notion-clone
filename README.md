@@ -79,3 +79,4 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - leading-snug --> line-height: 1.375;
 - The `InferSelectModel` function, as the name suggests, infers or deduces the SELECT statement based on the model's structure or schema.
 - next/dynamic is a composite of React.lazy() and Suspense. It behaves the same way in the app and pages directories to allow for incremental migration.
+- To protect your application from malicious users, configuration is required in order to use external images. This ensures that only external images from your account can be served from the Next.js Image Optimization API. These external images can be configured with the `remotePatterns` property in your `next.config.js` file
