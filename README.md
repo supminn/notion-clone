@@ -73,9 +73,8 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
     export const db = globalThis.prisma || new PrismaClient();
     if (process.env.NODE_ENV !== "production") globalThis.prisma = db;
   ```
-
-```
-But, they haven't mentioned how to use it? Would we not make use of drizzle orm anymore? not clear at all.
+  But, they haven't mentioned how to use it? Would we not make use of drizzle orm anymore? not clear at all.
+- [Timestamp](https://youtu.be/A3l6YYkXzzg?t=14236) - I am unable to open the dropdown on click
 
 ## My Learnings
 
@@ -92,4 +91,7 @@ But, they haven't mentioned how to use it? Would we not make use of drizzle orm 
 - The `InferSelectModel` function, as the name suggests, infers or deduces the SELECT statement based on the model's structure or schema.
 - next/dynamic is a composite of React.lazy() and Suspense. It behaves the same way in the app and pages directories to allow for incremental migration.
 - To protect your application from malicious users, configuration is required in order to use external images. This ensures that only external images from your account can be served from the Next.js Image Optimization API. These external images can be configured with the `remotePatterns` property in your `next.config.js` file
+
+```
+
 ```
