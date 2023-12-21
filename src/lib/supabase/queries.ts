@@ -10,7 +10,7 @@ import {
 } from "../../../migrations/schema";
 import db from "./db";
 import { File, Folder, Subscription, User, Workspace } from "./supabase.types";
-import { and, eq, notExists } from "drizzle-orm";
+import { and, eq, ilike, notExists } from "drizzle-orm";
 
 export const getUserSubscriptionStatus = async (userId: string) => {
   try {
@@ -146,4 +146,13 @@ export const addCollaborators = async (users: User[], workspaceId: string) => {
     if (!userExists)
       await db.insert(collaborators).values({ workspaceId, userId: user.id });
   });
+};
+
+export const getUsersFromSearch = async (email: string) => {
+  if (!email) return [];
+  const accounts = db
+    .select()
+    .from(users)
+    .where(ilike(users.email, `${email}%`));
+  return accounts;
 };

@@ -16,6 +16,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "../ui/button";
+import { getUsersFromSearch } from "@/lib/supabase/queries";
 
 interface CollaboratorSearchProps {
   existingCollaborators: User[] | [];
@@ -37,7 +38,13 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
     };
   }, []);
 
-  const onChangeHandler = () => {};
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(async () => {
+      const res = await getUsersFromSearch(e.target.value);
+      setSearchResults(res);
+    }, 450);
+  };
 
   return (
     <Sheet>
@@ -93,10 +100,7 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
                     {user.email}
                   </div>
                 </div>
-                <Button
-                  variant="secondary"
-                  onClick={() => addCollaborator(user)}
-                >
+                <Button variant="outline" onClick={() => addCollaborator(user)}>
                   Add
                 </Button>
               </div>

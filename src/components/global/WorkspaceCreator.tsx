@@ -19,6 +19,8 @@ import { addCollaborators, createWorkspace } from "@/lib/supabase/queries";
 import { useAppState } from "@/lib/providers/state-provider";
 import { useRouter } from "next/navigation";
 import CollaboratorSearch from "./CollaboratorSearch";
+import { ScrollArea } from "../ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const WorkspaceCreator = () => {
   const router = useRouter();
@@ -130,6 +132,58 @@ const WorkspaceCreator = () => {
               Add Collaborators
             </Button>
           </CollaboratorSearch>
+          <div className="mt-4">
+            <span className="text-sm text-muted-foreground">
+              Collaborators {collaborators.length || ""}
+            </span>
+            <ScrollArea
+              className="h-[120px]
+              overflow-y-scroll
+              w-full
+              rounded-md
+              border
+              border-muted-foreground/20"
+            >
+              {collaborators.length ? (
+                collaborators.map((collaborator) => (
+                  <div
+                    key={collaborator.id}
+                    className="p-4 flex justify-between items-center"
+                  >
+                    <div className="gap-4 flex items-center">
+                      <Avatar>
+                        <AvatarImage src="/avatars/5.png" />
+                        <AvatarFallback>AV</AvatarFallback>
+                      </Avatar>
+                      <div
+                        className="text-sm
+                          gap-2
+                          text-muted-foreground
+                          overflow-hidden
+                          overflow-ellipsis
+                          sm:w-[300px]
+                          w-[140px]"
+                      >
+                        {collaborator.email}
+                      </div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      onClick={() => removeCollaborator(collaborator)}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <div className="absolute right-0 left-0 top-0 bottom-0 flex justify-center items-center">
+                  <span className="text-muted-foreground text-sm">
+                    You have no collaborators
+                  </span>
+                </div>
+              )}
+            </ScrollArea>
+          </div>
         </div>
       )}
       <Button
