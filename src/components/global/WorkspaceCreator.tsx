@@ -64,7 +64,7 @@ const WorkspaceCreator = () => {
           title: "Success",
           description: "Created the private workspace",
         });
-        // ADD_WORKSPACE dispatch doesn't work, we refer to privateWorkspaces
+        // ADD_WORKSPACE dispatch doesn't work, as we refer to privateWorkspaces and not the state
         router.refresh();
       }
       if (permissions === "shared") {
