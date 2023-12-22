@@ -166,3 +166,32 @@ export const createFolder = async (folder: Folder) => {
     return { data: null, error: "Error in createFolder" };
   }
 };
+
+export const updateFolder = async (
+  folder: Partial<Folder>,
+  folderId: string
+) => {
+  try {
+    const response = await db
+      .update(folders)
+      .set(folder)
+      .where(eq(folders.id, folderId));
+    return { data: response, error: null }; // we need not return anything in data
+  } catch (error) {
+    console.log("Error in updateFolder", error);
+    return { data: null, error: "Error in updateFolder" };
+  }
+};
+
+export const updateFile = async (file: Partial<File>, fileId: string) => {
+  try {
+    const response = await db
+      .update(files)
+      .set(file)
+      .where(eq(files.id, fileId));
+    return { data: response, error: null }; // we need not return anything in data
+  } catch (error) {
+    console.log("Error in updateFile", error);
+    return { data: null, error: "Error in updateFile" };
+  }
+};
