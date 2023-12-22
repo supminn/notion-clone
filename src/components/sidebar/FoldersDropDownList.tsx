@@ -8,6 +8,7 @@ import { v4 } from "uuid";
 import { Folder } from "@/lib/supabase/supabase.types";
 import { createFolder } from "@/lib/supabase/queries";
 import { toast } from "../ui/use-toast";
+import { Accordion } from "../ui/accordion";
 
 interface FoldersDropDownListProps {
   workspaceFolders: Folder[];
@@ -18,7 +19,7 @@ const FoldersDropDownList: FC<FoldersDropDownListProps> = ({
   workspaceId,
 }) => {
   //TODO: setup real time updates
-  const { state, dispatch } = useAppState();
+  const { state, dispatch, folderId } = useAppState();
   const [folders, setFolders] = useState(workspaceFolders);
   const { subscription } = useSupabaseUser();
 
@@ -109,6 +110,17 @@ const FoldersDropDownList: FC<FoldersDropDownListProps> = ({
           />
         </TooltipWrapper>
       </div>
+      <Accordion
+        type="multiple"
+        defaultValue={[folderId || ""]}
+        className="pb-20"
+      >
+        {folders
+          .filter((folder) => !folder.inTrash)
+          .map((folder) => (
+            <div key={folder.id}></div>
+          ))}
+      </Accordion>
     </>
   );
 };
