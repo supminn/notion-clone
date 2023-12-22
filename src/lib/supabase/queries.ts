@@ -30,7 +30,7 @@ export const getUserSubscriptionStatus = async (userId: string) => {
 export const createWorkspace = async (workspace: Workspace) => {
   try {
     const response = await db.insert(workspaces).values(workspace);
-    return { data: response, error: null };
+    return { data: response, error: null }; // we need not return anything in data
   } catch (error) {
     console.log("Error in createWorkspace", error);
     return { data: null, error: "Error" };
@@ -155,4 +155,14 @@ export const getUsersFromSearch = async (email: string) => {
     .from(users)
     .where(ilike(users.email, `${email}%`));
   return accounts;
+};
+
+export const createFolder = async (folder: Folder) => {
+  try {
+    const response = await db.insert(folders).values(folder);
+    return { data: response, error: null }; // we need not return anything in data
+  } catch (error) {
+    console.log("Error in createFolder", error);
+    return { data: null, error: "Error in createFolder" };
+  }
 };

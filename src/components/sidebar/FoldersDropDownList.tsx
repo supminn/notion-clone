@@ -1,9 +1,13 @@
 "use client";
 import { useAppState } from "@/lib/providers/state-provider";
-import { Folder } from "@/lib/supabase/supabase.types";
 import React, { FC, useEffect, useState } from "react";
 import TooltipWrapper from "../global/TooltipWrapper";
 import { PlusIcon } from "lucide-react";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { v4 } from "uuid";
+import { Folder } from "@/lib/supabase/supabase.types";
+import { createFolder } from "@/lib/supabase/queries";
+import { toast } from "../ui/use-toast";
 
 interface FoldersDropDownListProps {
   workspaceFolders: Folder[];
@@ -16,6 +20,7 @@ const FoldersDropDownList: FC<FoldersDropDownListProps> = ({
   //TODO: setup real time updates
   const { state, dispatch } = useAppState();
   const [folders, setFolders] = useState(workspaceFolders);
+  const { subscription } = useSupabaseUser();
 
   // set initial state for folders
   useEffect(() => {
@@ -45,6 +50,38 @@ const FoldersDropDownList: FC<FoldersDropDownListProps> = ({
     );
   }, [state.workspaces, workspaceId]);
 
+  const addFolderHandler = async () => {
+    if (folders.length >= 3 && !subscription) {
+      // show a modal to upgrade to Pro
+    }
+    const newFolder: Folder = {
+      data: null,
+      id: v4(),
+      createdAt: new Date().toISOString(),
+      title: "Untitled",
+      iconId: "📄",
+      inTrash: null,
+      workspaceId,
+      bannerUrl: "",
+    };
+    dispatch({
+      type: "ADD_FOLDER",
+      payload: { workspaceId, folder: { ...newFolder, files: [] } },
+    });
+    const { error } = await createFolder(newFolder);
+    if (error) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Could not create the folder",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Created the folder",
+      });
+    }
+  };
   return (
     <>
       <div
@@ -66,6 +103,7 @@ const FoldersDropDownList: FC<FoldersDropDownListProps> = ({
         </span>
         <TooltipWrapper message="Create Folder">
           <PlusIcon
+            onClick={addFolderHandler}
             size={16}
             className="group-hover/title:inline-block hidden cursor-pointer hover:dark:text-white"
           />

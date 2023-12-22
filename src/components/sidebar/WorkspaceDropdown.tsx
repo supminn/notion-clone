@@ -23,7 +23,7 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
   const { state, dispatch } = useAppState();
 
   useEffect(() => {
-    if (state.workspaces.length) {
+    if (!state.workspaces.length) {
       dispatch({
         type: "SET_WORKSPACES",
         payload: {
