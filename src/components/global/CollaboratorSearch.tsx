@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "../ui/button";
 import { getUsersFromSearch } from "@/lib/supabase/queries";
+import { TIMEOUT_VALUE } from "@/lib/contants";
 
 interface CollaboratorSearchProps {
   existingCollaborators: User[] | [];
@@ -43,7 +44,7 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
     timerRef.current = setTimeout(async () => {
       const res = await getUsersFromSearch(e.target.value);
       setSearchResults(res);
-    }, 450);
+    }, TIMEOUT_VALUE);
   };
 
   return (
@@ -100,7 +101,7 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
                     {user.email}
                   </div>
                 </div>
-                <Button variant="outline" onClick={() => addCollaborator(user)}>
+                <Button variant="ghost" onClick={() => addCollaborator(user)}>
                   Add
                 </Button>
               </div>

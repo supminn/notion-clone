@@ -21,14 +21,17 @@ import { useRouter } from "next/navigation";
 import CollaboratorSearch from "./CollaboratorSearch";
 import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useToast } from "../ui/use-toast";
+import { DialogClose } from "../ui/dialog";
 
 const WorkspaceCreator = () => {
   const router = useRouter();
   const { user } = useSupabaseUser();
+  const { toast } = useToast();
   const [permissions, setPermissions] = useState("private");
   const [title, setTitle] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [collaborators, setCollaborators] = useState<User[]>([]);
-  const { dispatch } = useAppState();
 
   const addCollaborator = (user: User) => {
     setCollaborators((prev) => [...prev, user]);
@@ -41,6 +44,7 @@ const WorkspaceCreator = () => {
   };
 
   const createItem = async () => {
+    setIsLoading(true);
     const uuid = v4();
     if (user?.id) {
       const newWorkspace: Workspace = {
@@ -56,17 +60,24 @@ const WorkspaceCreator = () => {
       };
       if (permissions === "private") {
         await createWorkspace(newWorkspace);
-        dispatch({
-          type: "ADD_WORKSPACE",
-          payload: { ...newWorkspace, folders: [] },
+        toast({
+          title: "Success",
+          description: "Created the private workspace",
         });
+        // ADD_WORKSPACE dispatch doesn't work, we refer to privateWorkspaces
+        router.refresh();
       }
       if (permissions === "shared") {
         await createWorkspace(newWorkspace);
         await addCollaborators(collaborators, uuid);
+        toast({
+          title: "Success",
+          description: "Created the shared workspace",
+        });
         router.refresh();
       }
     }
+    setIsLoading(false);
   };
   return (
     <div className="flex gap-4 flex-col mt-4">
@@ -134,7 +145,7 @@ const WorkspaceCreator = () => {
           </CollaboratorSearch>
           <div className="mt-4">
             <span className="text-sm text-muted-foreground">
-              Collaborators {collaborators.length || ""}
+              Collaborators ({collaborators.length || ""})
             </span>
             <ScrollArea
               className="h-[120px]
@@ -168,7 +179,7 @@ const WorkspaceCreator = () => {
                       </div>
                     </div>
                     <Button
-                      variant="outline"
+                      variant="ghost"
                       onClick={() => removeCollaborator(collaborator)}
                     >
                       Remove
@@ -186,16 +197,20 @@ const WorkspaceCreator = () => {
           </div>
         </div>
       )}
-      <Button
-        type="button"
-        disabled={
-          !title || (permissions === "shared" && collaborators.length === 0)
-        }
-        variant="secondary"
-        onClick={createItem}
-      >
-        Create
-      </Button>
+      <DialogClose asChild>
+        <Button
+          type="button"
+          disabled={
+            !title ||
+            (permissions === "shared" && collaborators.length === 0) ||
+            isLoading
+          }
+          variant="outline"
+          onClick={createItem}
+        >
+          Create
+        </Button>
+      </DialogClose>
     </div>
   );
 };

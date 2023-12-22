@@ -138,3 +138,5 @@ export const PRICING_CARDS = [
 ];
 
 export const PRICING_PLANS = { pro: "Pro Plan", free: "Free Plan" };
+export const MAX_FOLDERS_FREE_PLAN = 3;
+export const TIMEOUT_VALUE = 500;
