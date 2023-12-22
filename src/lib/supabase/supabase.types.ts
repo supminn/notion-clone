@@ -21,6 +21,39 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      collaborators: {
+        Row: {
+          created_at: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string;
+          user_id?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "collaborators_user_id_users_id_fk";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "collaborators_workspace_id_workspaces_id_fk";
+            columns: ["workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       customers: {
         Row: {
           id: string;
@@ -47,7 +80,7 @@ export interface Database {
       files: {
         Row: {
           banner_url: string | null;
-          created_at: string | null;
+          created_at: string;
           data: string | null;
           folder_id: string;
           icon_id: string;
@@ -55,11 +88,10 @@ export interface Database {
           in_trash: string | null;
           title: string;
           workspace_id: string;
-          workspace_owner: string;
         };
         Insert: {
           banner_url?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           data?: string | null;
           folder_id: string;
           icon_id: string;
@@ -67,11 +99,10 @@ export interface Database {
           in_trash?: string | null;
           title: string;
           workspace_id: string;
-          workspace_owner: string;
         };
         Update: {
           banner_url?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           data?: string | null;
           folder_id?: string;
           icon_id?: string;
@@ -79,7 +110,6 @@ export interface Database {
           in_trash?: string | null;
           title?: string;
           workspace_id?: string;
-          workspace_owner?: string;
         };
         Relationships: [
           {
@@ -101,36 +131,33 @@ export interface Database {
       folders: {
         Row: {
           banner_url: string | null;
-          created_at: string | null;
+          created_at: string;
           data: string | null;
           icon_id: string;
           id: string;
           in_trash: string | null;
           title: string;
           workspace_id: string;
-          workspace_owner: string;
         };
         Insert: {
           banner_url?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           data?: string | null;
           icon_id: string;
           id?: string;
           in_trash?: string | null;
           title: string;
           workspace_id: string;
-          workspace_owner: string;
         };
         Update: {
           banner_url?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           data?: string | null;
           icon_id?: string;
           id?: string;
           in_trash?: string | null;
           title?: string;
           workspace_id?: string;
-          workspace_owner?: string;
         };
         Relationships: [
           {
@@ -340,7 +367,7 @@ export interface Database {
       workspaces: {
         Row: {
           banner_url: string | null;
-          created_at: string | null;
+          created_at: string;
           data: string | null;
           icon_id: string;
           id: string;
@@ -351,7 +378,7 @@ export interface Database {
         };
         Insert: {
           banner_url?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           data?: string | null;
           icon_id: string;
           id?: string;
@@ -362,7 +389,7 @@ export interface Database {
         };
         Update: {
           banner_url?: string | null;
-          created_at?: string | null;
+          created_at?: string;
           data?: string | null;
           icon_id?: string;
           id?: string;
@@ -656,7 +683,6 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
   ? Database["public"]["Enums"][PublicEnumNameOrOptions]
   : never;
-
 export type Workspace = InferSelectModel<typeof workspaces>;
 export type User = InferSelectModel<typeof users>;
 export type Folder = InferSelectModel<typeof folders>;

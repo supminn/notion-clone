@@ -29,6 +29,13 @@
       "when": 1703142710449,
       "tag": "0003_moaning_shen",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1703247794087,
+      "tag": "0004_great_squadron_supreme",
+      "breakpoints": true
     }
   ]
 }

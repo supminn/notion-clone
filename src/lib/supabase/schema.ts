@@ -36,7 +36,6 @@ export const folders = pgTable("folders", {
   })
     .defaultNow()
     .notNull(),
-  workspaceOwner: uuid("workspace_owner").notNull(),
   title: text("title").notNull(),
   iconId: text("icon_id").notNull(),
   data: text("data"),
@@ -57,7 +56,6 @@ export const files = pgTable("files", {
   })
     .defaultNow()
     .notNull(),
-  workspaceOwner: uuid("workspace_owner").notNull(),
   title: text("title").notNull(),
   iconId: text("icon_id").notNull(),
   data: text("data"),
