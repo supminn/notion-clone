@@ -62,7 +62,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
       Change your-project-ref; It will create the types within the mentioned file
   ```
   - After this step, when we linked subscription data from `dashboard/page.tsx` to `DashboardSetup` the page refresh was breaking.
-    Commenting out `migrateDb()` from `db` file fixed the above issue
+    Commenting out `migrateDb()` from `db` file fixed the above issue. Discussion on this issue in the [video](https://youtu.be/A3l6YYkXzzg?t=17685). Even this does not fix it. The docs have been updated.
   - [onSubmitHandler](https://youtu.be/A3l6YYkXzzg?t=10646) code was not added.
   - When we added a new collaborator schema, `yarn generate` and `yarn dev` to migrate the schema, things stopped working. I had to go into supabase database settings and restart the db. This is due to a timeout error. Fix for this is to use the following code. [discussed on discord](https://discord.com/channels/1073369006272172123/1187303494781247518)
   ```js
@@ -92,7 +92,4 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - The `InferSelectModel` function, as the name suggests, infers or deduces the SELECT statement based on the model's structure or schema.
 - next/dynamic is a composite of React.lazy() and Suspense. It behaves the same way in the app and pages directories to allow for incremental migration.
 - To protect your application from malicious users, configuration is required in order to use external images. This ensures that only external images from your account can be served from the Next.js Image Optimization API. These external images can be configured with the `remotePatterns` property in your `next.config.js` file
-
-```
-
-```
+- According to PostgresJS official website, PostgresJS is the fastest fully featured PostgreSQL client for Node.js and Deno.

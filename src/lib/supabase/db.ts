@@ -10,7 +10,10 @@ if (!process.env.DATABASE_URL) {
   console.log("🛑 Cannot find database url");
 }
 
-const client = postgres(process.env.DATABASE_URL as string, { max: 1 });
+const client = postgres(process.env.DATABASE_URL as string, {
+  max: 1,
+  prepare: false,
+});
 const db = drizzle(client, { schema });
 // Everytime the database is updated, this migrateDb would migrate the changes to keep our schema upto date.
 const migrateDb = async () => {

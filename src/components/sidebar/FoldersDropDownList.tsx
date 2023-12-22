@@ -64,10 +64,10 @@ const FoldersDropDownList: FC<FoldersDropDownListProps> = ({
         <span className="text-Neutrals/neutrals-8 font-bold text-xs">
           FOLDERS
         </span>
-        <TooltipWrapper message="New Folder">
+        <TooltipWrapper message="Create Folder">
           <PlusIcon
             size={16}
-            className="group-hover/title:inline-block hidden cursor-pointer"
+            className="group-hover/title:inline-block hidden cursor-pointer hover:dark:text-white"
           />
         </TooltipWrapper>
       </div>
