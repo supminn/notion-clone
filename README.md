@@ -75,6 +75,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
   ```
   But, they haven't mentioned how to use it? Would we not make use of drizzle orm anymore? not clear at all.
 - [Timestamp](https://youtu.be/A3l6YYkXzzg?t=14236) - I am unable to open the dropdown on click
+- [No need for this](https://youtu.be/A3l6YYkXzzg?t=16223) as we have added delete on cascade.
 
 ## My Learnings
 
