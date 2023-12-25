@@ -93,14 +93,14 @@ const Dropdown: React.FC<DropdownProps> = ({
   // Blur the dropdown when the user clicks outside. This would also save the changes
   const handleBlur = async () => {
     setIsEditting(false);
-    const fileAndFolderId = id.split("folder")[0];
+    const fileAndFolderId = id.split("folder");
     if (fileAndFolderId?.length === 1) {
       if (!folderTitle) return;
-      await updateFolder({ title }, fileAndFolderId);
+      await updateFolder({ title }, fileAndFolderId[0]);
     }
     if (fileAndFolderId?.length === 2 && fileAndFolderId[1]) {
       if (!fileTitle) return;
-      await updateFile({ title }, fileAndFolderId);
+      await updateFile({ title }, fileAndFolderId[1]);
     }
   };
   // onChanges

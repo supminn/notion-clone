@@ -76,7 +76,7 @@ const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
             z-40"
           />
           <FoldersDropDownList
-            workspaceFolders={workspaceFolderData ?? []}
+            workspaceFolders={workspaceFolderData || []}
             workspaceId={params.workspaceId}
           />
         </ScrollArea>
