@@ -1,13 +1,15 @@
 "use client";
 import { useAppState } from "@/lib/providers/state-provider";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import { AccordionItem, AccordionTrigger } from "../ui/accordion";
 import clsx from "clsx";
 import EmojiPicker from "../global/EmojiPicker";
 import { updateFile, updateFolder } from "@/lib/supabase/queries";
 import { useToast } from "../ui/use-toast";
+import TooltipWrapper from "../global/TooltipWrapper";
+import { PlusIcon, Trash } from "lucide-react";
 
 interface DropdownProps {
   title: string;
@@ -184,25 +186,52 @@ const Dropdown: React.FC<DropdownProps> = ({
               <EmojiPicker getValue={onChangeEmojiHandler}>
                 {iconId}
               </EmojiPicker>
-              <input
-                type="text"
-                value={listType === "folder" ? folderTitle : fileTitle}
-                className={clsx(
-                  "outline-none overflow-hidden w-[140px] text-Neutrals/neutrals-7",
-                  {
-                    "bg-muted cursor-text": isEditting,
-                    "bg-transparent cursor-pointer": !isEditting,
-                  }
-                )}
-                readOnly={!isEditting}
-                onDoubleClick={handleDoubleClick}
-                onBlur={handleBlur}
-                onChange={
-                  listType === "folder" ? folderTitleChange : fileTitleChange
-                }
-              />
             </div>
-            {listType === "folder" && !isEditting && <></>}
+            <input
+              type="text"
+              value={listType === "folder" ? folderTitle : fileTitle}
+              className={clsx(
+                "outline-none overflow-hidden w-[140px] text-Neutrals/neutrals-7",
+                {
+                  "bg-muted cursor-text": isEditting,
+                  "bg-transparent cursor-pointer": !isEditting,
+                }
+              )}
+              readOnly={!isEditting}
+              onDoubleClick={handleDoubleClick}
+              onBlur={handleBlur}
+              onChange={
+                listType === "folder" ? folderTitleChange : fileTitleChange
+              }
+            />
+          </div>
+          <div
+            className="h-full
+              hidden
+              group-hover/file:block
+              rounded-sm
+              absolute
+              right-0
+              items-center
+              gap-2
+              justify-center"
+          >
+            <TooltipWrapper message="Delete Folder">
+              <Trash
+                // onClick={moveToTrash}
+                size={15}
+                className="hover:dark:text-white dark:text-Neutrals/neutrals-7 transition-colors"
+              />
+            </TooltipWrapper>
+            {listType === "folder" && !isEditting && (
+              <TooltipWrapper message="Add a File">
+                <PlusIcon
+                  // onClick={addNewFile}
+                  size={15}
+                  className="hover:dark:text-white dark:text-Neutrals/neutrals-7 transition-colors"
+                />
+              </TooltipWrapper>
+            )}
           </div>
         </div>
       </AccordionTrigger>
