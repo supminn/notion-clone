@@ -74,13 +74,13 @@ const SettingsForm = () => {
   // onChanges
   const workspaceNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!workspaceId || !e.target.value) return;
+    dispatch({
+      type: "UPDATE_WORKSPACE",
+      payload: { workspaceId, workspace: { title: e.target.value } },
+    });
     if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
     titleTimerRef.current = setTimeout(async () => {
       await updateWorkspace({ title: e.target.value }, workspaceId);
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: { workspaceId, workspace: { title: e.target.value } },
-      });
     });
   };
 
