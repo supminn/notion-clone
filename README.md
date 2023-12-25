@@ -99,5 +99,4 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 ## Todo
 
 - Add loader while changing workspaces, login or signup page
-- Edit `Dropdown.tsx` to remove the logic of `id.split('folder')`
 - If folder is `inTrash` make sure that the files within this folder are also updated to `isTrash`. Similarly, the same approach for workspace too.
