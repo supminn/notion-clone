@@ -22,18 +22,9 @@ interface DropdownProps {
   id: string;
   listType: "folder" | "file";
   iconId: string;
-  children?: React.ReactNode;
-  disabled?: boolean;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({
-  title,
-  id,
-  listType,
-  iconId,
-  children,
-  disabled,
-}) => {
+const Dropdown: React.FC<DropdownProps> = ({ title, id, listType, iconId }) => {
   const { toast } = useToast();
   const { user } = useSupabaseUser();
   const { state, dispatch, workspaceId, folderId } = useAppState();
