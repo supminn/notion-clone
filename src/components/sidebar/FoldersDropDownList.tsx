@@ -61,7 +61,7 @@ const FoldersDropDownList: FC<FoldersDropDownListProps> = ({
       id: v4(),
       createdAt: new Date().toISOString(),
       title: "Untitled",
-      iconId: "📄",
+      iconId: "📁",
       inTrash: null,
       workspaceId,
       bannerUrl: "",

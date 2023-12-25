@@ -76,6 +76,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
   But, they haven't mentioned how to use it? Would we not make use of drizzle orm anymore? not clear at all.
 - [Timestamp](https://youtu.be/A3l6YYkXzzg?t=14236) - I am unable to open the dropdown on click
 - [No need for this](https://youtu.be/A3l6YYkXzzg?t=16223) as we have added delete on cascade.
+- At [Timestamp](https://youtu.be/A3l6YYkXzzg?t=22405) didn't talk about how the profile section is created in the sidebar bottom.
 
 ## My Learnings
 
@@ -93,3 +94,8 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - next/dynamic is a composite of React.lazy() and Suspense. It behaves the same way in the app and pages directories to allow for incremental migration.
 - To protect your application from malicious users, configuration is required in order to use external images. This ensures that only external images from your account can be served from the Next.js Image Optimization API. These external images can be configured with the `remotePatterns` property in your `next.config.js` file
 - According to PostgresJS official website, PostgresJS is the fastest fully featured PostgreSQL client for Node.js and Deno.
+
+## Todo
+
+- Add loader while changing workspaces
+- Edit `Dropdown.tsx` to remove the logic of `id.split('folder')`

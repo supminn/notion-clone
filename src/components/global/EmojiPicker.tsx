@@ -17,7 +17,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({ children, getValue }) => {
     <div className="flex items-center">
       <Popover>
         <PopoverTrigger className="cursor-pointer">{children}</PopoverTrigger>
-        <PopoverContent className="p-0 border-none">
+        <PopoverContent className="p-0 border-none z-40">
           <Picker onEmojiClick={onClick} />
         </PopoverContent>
       </Popover>
