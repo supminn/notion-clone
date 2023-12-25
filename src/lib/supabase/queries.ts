@@ -11,6 +11,7 @@ import {
 import db from "./db";
 import { File, Folder, Subscription, User, Workspace } from "./supabase.types";
 import { and, eq, ilike, notExists } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export const getUserSubscriptionStatus = async (userId: string) => {
   try {
@@ -148,6 +149,29 @@ export const addCollaborators = async (users: User[], workspaceId: string) => {
   });
 };
 
+export const removeCollaborators = async (
+  users: User[],
+  workspaceId: string
+) => {
+  const response = users.forEach(async (user: User) => {
+    const userExists = await db.query.collaborators.findFirst({
+      where: (dbUser, { eq }) =>
+        and(eq(dbUser.userId, user.id), eq(dbUser.workspaceId, workspaceId)),
+    });
+    if (userExists)
+      await db
+        .delete(collaborators)
+        .where(
+          and(
+            eq(collaborators.workspaceId, workspaceId),
+            eq(collaborators.userId, user.id)
+          )
+        );
+  });
+};
+
+export const deleteWorkspace = async (workspaceId: string) => {};
+
 export const getUsersFromSearch = async (email: string) => {
   if (!email) return [];
   const accounts = db
@@ -203,5 +227,23 @@ export const createFile = async (file: File) => {
   } catch (error) {
     console.log("Error in createFile", error);
     return { data: null, error: "Error in createFile" };
+  }
+};
+
+export const updateWorkspace = async (
+  workspace: Partial<Workspace>,
+  workspaceId: string
+) => {
+  if (!workspaceId) return { data: null, error: "WorkspaceId required" };
+  try {
+    const response = await db
+      .update(workspaces)
+      .set(workspace)
+      .where(eq(workspaces.id, workspaceId));
+    revalidatePath(`/dashboard/${workspaceId}`);
+    return { data: response, error: null };
+  } catch (error) {
+    console.log("Error in updateWorkspace", error);
+    return { data: null, error: "Error in updateWorkspace" };
   }
 };
