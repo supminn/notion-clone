@@ -1,6 +1,5 @@
 "use client";
 import { useAppState } from "@/lib/providers/state-provider";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
 import {
@@ -35,7 +34,6 @@ const Dropdown: React.FC<DropdownProps> = ({
   children,
   disabled,
 }) => {
-  const supabase = createClientComponentClient();
   const { toast } = useToast();
   const { user } = useSupabaseUser();
   const { state, dispatch, workspaceId, folderId } = useAppState();
@@ -145,6 +143,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   // Blur the dropdown when the user clicks outside. This would also save the changes
   const handleBlur = async () => {
+    // TODO: handle not to change the title if empty string is passed
     if (!isEditting) return;
     setIsEditting(false);
     const fileAndFolderId = id.split("folder");

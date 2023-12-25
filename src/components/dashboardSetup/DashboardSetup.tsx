@@ -83,7 +83,7 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
         logo: filePath || null,
         bannerUrl: "",
       };
-      const { data, error: createError } = await createWorkspace(newWorkspace);
+      const { error: createError } = await createWorkspace(newWorkspace);
       if (createError)
         throw new Error(
           "Error while creating a new workspace, createWorkspace"

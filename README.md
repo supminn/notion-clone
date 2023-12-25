@@ -77,6 +77,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - [Timestamp](https://youtu.be/A3l6YYkXzzg?t=14236) - I am unable to open the dropdown on click
 - [No need for this](https://youtu.be/A3l6YYkXzzg?t=16223) as we have added delete on cascade.
 - At [Timestamp](https://youtu.be/A3l6YYkXzzg?t=22405) didn't talk about how the profile section is created in the sidebar bottom.
+- [Timestamp](https://youtu.be/A3l6YYkXzzg?t=25582) we delete the workspace from db instead of adding it to trash. I have added the trash feature.
 
 ## My Learnings
 
@@ -97,5 +98,6 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 
 ## Todo
 
-- Add loader while changing workspaces
+- Add loader while changing workspaces, login or signup page
 - Edit `Dropdown.tsx` to remove the logic of `id.split('folder')`
+- If folder is `inTrash` make sure that the files within this folder are also updated to `isTrash`. Similarly, the same approach for workspace too.

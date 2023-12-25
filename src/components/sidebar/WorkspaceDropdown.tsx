@@ -75,39 +75,45 @@ const WorkspaceDropdown: React.FC<WorkspaceDropdownProps> = ({
                 <>
                   <p className="text-muted-foreground">Private</p>
                   <hr />
-                  {privateWorkspaces.map((option) => (
-                    <SelectedWorkspace
-                      key={option.id}
-                      workspace={option}
-                      onClick={handleSelect}
-                    />
-                  ))}
+                  {privateWorkspaces
+                    .filter((workspace) => !workspace.inTrash)
+                    .map((option) => (
+                      <SelectedWorkspace
+                        key={option.id}
+                        workspace={option}
+                        onClick={handleSelect}
+                      />
+                    ))}
                 </>
               )}
               {!!sharedWorkspaces.length && (
                 <>
                   <p className="text-muted-foreground">Shared</p>
                   <hr />
-                  {sharedWorkspaces.map((option) => (
-                    <SelectedWorkspace
-                      key={option.id}
-                      workspace={option}
-                      onClick={handleSelect}
-                    />
-                  ))}
+                  {sharedWorkspaces
+                    .filter((workspace) => !workspace.inTrash)
+                    .map((option) => (
+                      <SelectedWorkspace
+                        key={option.id}
+                        workspace={option}
+                        onClick={handleSelect}
+                      />
+                    ))}
                 </>
               )}
               {!!collaboratingWorkspaces.length && (
                 <>
                   <p className="text-muted-foreground">Collaborating</p>
                   <hr />
-                  {collaboratingWorkspaces.map((option) => (
-                    <SelectedWorkspace
-                      key={option.id}
-                      workspace={option}
-                      onClick={handleSelect}
-                    />
-                  ))}
+                  {collaboratingWorkspaces
+                    .filter((workspace) => !workspace.inTrash)
+                    .map((option) => (
+                      <SelectedWorkspace
+                        key={option.id}
+                        workspace={option}
+                        onClick={handleSelect}
+                      />
+                    ))}
                 </>
               )}
             </div>
