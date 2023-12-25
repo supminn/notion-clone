@@ -14,7 +14,8 @@ const DashboardPage = async () => {
   } = await supabase.auth.getUser();
   if (!user) return;
   const workspace = await db.query.workspaces.findFirst({
-    where: (workspace, { eq }) => eq(workspace.workspaceOwner, user.id),
+    where: (workspace, { eq, and }) =>
+      and(eq(workspace.workspaceOwner, user.id), eq(workspace.inTrash, "")),
   });
   const { data: subscription, error: subscriptionError } =
     await getUserSubscriptionStatus(user.id);
