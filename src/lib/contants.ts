@@ -160,3 +160,32 @@ export const TOOLBAR_OPTIONS = [
 
   ["clean"], // remove formatting button
 ];
+
+export const DUMMY_USER_DATA = [
+  {
+    id: "1",
+    email: "user1@example.com",
+    fullName: "User One",
+    avatarUrl: "https://example.com/avatar/user1.jpg",
+    billingAddress: {
+      /* billing address data */
+    },
+    paymentMethod: {
+      /* payment method data */
+    },
+    updatedAt: "2023-12-01T10:30:00Z",
+  },
+  {
+    id: "2",
+    email: "user2@example.com",
+    fullName: "User Two",
+    avatarUrl: "https://example.com/avatar/user2.jpg",
+    billingAddress: {
+      /* billing address data */
+    },
+    paymentMethod: {
+      /* payment method data */
+    },
+    updatedAt: "2023-12-02T11:45:00Z",
+  },
+];
