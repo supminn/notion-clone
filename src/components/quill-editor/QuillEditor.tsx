@@ -62,6 +62,10 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   const restoreFromTrash = async () => {
     if (dirType === "file") {
       if (!folderId || !workspaceId) return;
+      dispatch({
+        type: "UPDATE_FILE",
+        payload: { workspaceId, folderId, file: { inTrash: "" }, fileId },
+      });
       const { error } = await updateFile({ inTrash: "" }, fileId);
       if (error) {
         toast({
@@ -70,10 +74,6 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
           description: "Could not restore file",
         });
       } else {
-        dispatch({
-          type: "UPDATE_FILE",
-          payload: { workspaceId, folderId, file: { inTrash: "" }, fileId },
-        });
         toast({
           title: "Success",
           description: "Restored file successfully",
@@ -82,6 +82,10 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
     }
     if (dirType === "folder") {
       if (!workspaceId) return;
+      dispatch({
+        type: "UPDATE_FOLDER",
+        payload: { workspaceId, folder: { inTrash: "" }, folderId: fileId },
+      });
       const { error } = await updateFolder({ inTrash: "" }, fileId);
       if (error) {
         toast({
@@ -90,10 +94,6 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
           description: "Could not restore folder",
         });
       } else {
-        dispatch({
-          type: "UPDATE_FOLDER",
-          payload: { workspaceId, folder: { inTrash: "" }, folderId: fileId },
-        });
         toast({
           title: "Success",
           description: "Restored folder successfully",
@@ -101,6 +101,10 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
       }
     }
     if (dirType === "workspace") {
+      dispatch({
+        type: "UPDATE_WORKSPACE",
+        payload: { workspaceId: fileId, workspace: { inTrash: "" } },
+      });
       const { error } = await updateWorkspace({ inTrash: "" }, fileId);
       if (error) {
         toast({
@@ -109,10 +113,6 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
           description: "Could not restore workspace",
         });
       } else {
-        dispatch({
-          type: "UPDATE_WORKSPACE",
-          payload: { workspaceId: fileId, workspace: { inTrash: "" } },
-        });
         toast({
           title: "Success",
           description: "Restored workspace successfully",
@@ -124,6 +124,10 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   const deleteForever = async () => {
     if (dirType === "file") {
       if (!folderId || !workspaceId) return;
+      dispatch({
+        type: "DELETE_FILE",
+        payload: { workspaceId, folderId, fileId },
+      });
       const { error } = await deleteFile(fileId);
       if (error) {
         toast({
@@ -132,10 +136,6 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
           description: "Could not delete file",
         });
       } else {
-        dispatch({
-          type: "DELETE_FILE",
-          payload: { workspaceId, folderId, fileId },
-        });
         toast({
           title: "Success",
           description: "Deleted file successfully",
@@ -144,6 +144,10 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
     }
     if (dirType === "folder") {
       if (!workspaceId) return;
+      dispatch({
+        type: "DELETE_FOLDER",
+        payload: { workspaceId, folderId: fileId },
+      });
       const { error } = await deleteFolder(fileId);
       if (error) {
         toast({
@@ -152,10 +156,6 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
           description: "Could not delete folder",
         });
       } else {
-        dispatch({
-          type: "DELETE_FOLDER",
-          payload: { workspaceId, folderId: fileId },
-        });
         toast({
           title: "Success",
           description: "Deleted folder successfully",
@@ -163,6 +163,10 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
       }
     }
     if (dirType === "workspace") {
+      dispatch({
+        type: "DELETE_WORKSPACE",
+        payload: { workspaceId: fileId },
+      });
       const { error } = await deleteWorkspace(fileId);
       if (error) {
         toast({
@@ -171,10 +175,6 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
           description: "Could not delete workspace",
         });
       } else {
-        dispatch({
-          type: "DELETE_WORKSPACE",
-          payload: { workspaceId: fileId },
-        });
         toast({
           title: "Success",
           description: "Deleted workspace successfully",
