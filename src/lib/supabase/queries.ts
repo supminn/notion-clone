@@ -70,6 +70,55 @@ export const getFolders = async (workspaceId: string) => {
   }
 };
 
+export const getWorkspaceDetails = async (workspaceId: string) => {
+  const isValid = validate(workspaceId);
+  if (!isValid) return { data: [], error: "Error in validate" };
+  try {
+    // db.query.tablename.findone --> this can also be done
+    const workspaceData = (await db
+      .select()
+      .from(workspaces)
+      .where(eq(workspaces.id, workspaceId))
+      .limit(1)) as Workspace[];
+    return { data: workspaceData, error: null };
+  } catch (error) {
+    console.log("Error in getWorkspaceDetails", error);
+    return { data: null, error: "Error in getWorkspaceDetails" };
+  }
+};
+
+export const getFolderDetails = async (folderId: string) => {
+  const isValid = validate(folderId);
+  if (!isValid) return { data: [], error: "Error in validate" };
+  try {
+    const folderData = (await db
+      .select()
+      .from(folders)
+      .where(eq(folders.id, folderId))
+      .limit(1)) as Folder[];
+    return { data: folderData, error: null };
+  } catch (error) {
+    console.log("Error in getFolderDetails", error);
+    return { data: null, error: "Error in getFolderDetails" };
+  }
+};
+
+export const getFileDetails = async (fileId: string) => {
+  const isValid = validate(fileId);
+  if (!isValid) return { data: [], error: "Error in validate" };
+  try {
+    const fileData = (await db
+      .select()
+      .from(files)
+      .where(eq(files.id, fileId))
+      .limit(1)) as File[];
+    return { data: fileData, error: null };
+  } catch (error) {
+    console.log("Error in getFileDetails", error);
+    return { data: null, error: "Error in getFileDetails" };
+  }
+};
+
 export const getPrivateWorkspaces = async (userId: string) => {
   if (!userId) return [];
   const privateWorkspaces = (await db
@@ -170,7 +219,40 @@ export const removeCollaborators = async (
   });
 };
 
-export const deleteWorkspace = async (workspaceId: string) => {};
+export const deleteWorkspace = async (workspaceId: string) => {
+  if (!workspaceId) return { data: null, error: "No workspaceId" };
+  try {
+    const response = db
+      .delete(workspaces)
+      .where(eq(workspaces.id, workspaceId));
+    return { data: response, error: null };
+  } catch (error) {
+    console.log("Error in deleteWorkspace", error);
+    return { data: null, error: "Error in deleteWorkspace" };
+  }
+};
+
+export const deleteFolder = async (folderId: string) => {
+  if (!folderId) return { data: null, error: "No folderId" };
+  try {
+    const response = db.delete(folders).where(eq(folders.id, folderId));
+    return { data: response, error: null };
+  } catch (error) {
+    console.log("Error in deleteFolder", error);
+    return { data: null, error: "Error in deleteFolder" };
+  }
+};
+
+export const deleteFile = async (fileId: string) => {
+  if (!fileId) return { data: null, error: "No fileId" };
+  try {
+    const response = db.delete(files).where(eq(files.id, fileId));
+    return { data: response, error: null };
+  } catch (error) {
+    console.log("Error in deleteFile", error);
+    return { data: null, error: "Error in deleteFile" };
+  }
+};
 
 export const getUsersFromSearch = async (email: string) => {
   if (!email) return [];
