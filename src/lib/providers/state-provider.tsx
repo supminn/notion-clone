@@ -24,7 +24,7 @@ type Action =
   | { type: "ADD_WORKSPACE"; payload: appWorkspacesType }
   | { type: "DELETE_WORKSPACE"; payload: { workspaceId: string } }
   | {
-      type: "UPDATE_WORKSPACE";
+      type: "UPDATE_WORKSPACE" | "HANDLE_WORKSPACE_TRASH";
       payload: { workspace: Partial<appWorkspacesType>; workspaceId: string };
     }
   | {
@@ -56,7 +56,7 @@ type Action =
       payload: { workspaceId: string; files: File[]; folderId: string };
     }
   | {
-      type: "UPDATE_FOLDER";
+      type: "UPDATE_FOLDER" | "HANDLE_FOLDER_TRASH";
       payload: {
         workspaceId: string;
         folderId: string;
@@ -261,6 +261,53 @@ const appReducer = (
         ),
       };
     }
+    // case "HANDLE_WORKSPACE_TRASH": {
+    //   // cascade delete/restore all the folders and files in this workspace
+    //   return {
+    //     ...state,
+    //     workspaces: state.workspaces.map((workspace) =>
+    //       workspace.id === payload.workspaceId
+    //         ? {
+    //             ...workspace,
+    //             ...payload.workspace,
+    //             folders: workspace.folders.map((folder) => ({
+    //               ...folder,
+    //               inTrash: payload.workspace.inTrash,
+    //               files: folder.files.map((file) => ({
+    //                 ...file,
+    //                 inTrash: payload.workspace.inTrash,
+    //               })),
+    //             })),
+    //           }
+    //         : workspace
+    //     ),
+    //   };
+    // }
+    // case "HANDLE_FOLDER_TRASH": {
+    //   // cascade delete/restore all the files in this folder
+    //   return {
+    //     ...state,
+    //     workspaces: state.workspaces.map((workspace) =>
+    //       workspace.id === payload.workspaceId
+    //         ? {
+    //             ...workspace,
+    //             folders: workspace.folders.map((folder) =>
+    //               folder.id === payload.folderId
+    //                 ? {
+    //                     ...folder,
+    //                     ...payload.folder,
+    //                     files: folder.files.map((file) => ({
+    //                       ...file,
+    //                       inTrash: payload.folder.inTrash,
+    //                     })),
+    //                   }
+    //                 : folder
+    //             ),
+    //           }
+    //         : workspace
+    //     ),
+    //   };
+    // }
     default: {
       return initalState;
     }
