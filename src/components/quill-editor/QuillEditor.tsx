@@ -15,6 +15,7 @@ import {
   updateWorkspace,
 } from "@/lib/supabase/queries";
 import { toast } from "../ui/use-toast";
+import { usePathname } from "next/navigation";
 
 interface QuillEditorProps {
   dirType: "workspace" | "folder" | "file";
@@ -39,6 +40,41 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
       ...dirDetails,
     } as File | Folder | Workspace;
   }, [state, workspaceId, folderId, fileId, dirType, dirDetails]);
+
+  const pathName = usePathname();
+  const breadCrumbs = useMemo(() => {
+    if (!pathName || !state.workspaces) return;
+    const segments = pathName
+      .split("/")
+      .filter((val) => val !== "dashboard" && val);
+    const workspaceDetails = state.workspaces.find(
+      (workspace) => workspace.id === segments[0]
+    );
+    const workspaceBreadCrumb = workspaceDetails
+      ? `${workspaceDetails.iconId} ${workspaceDetails.title}`
+      : "";
+    if (segments.length === 1) {
+      return workspaceBreadCrumb;
+    }
+    const folderDetails = workspaceDetails?.folders.find(
+      (folder) => folder.id === segments[1]
+    );
+    const folderBreadCrumb = folderDetails
+      ? `${folderDetails.iconId} ${folderDetails.title}`
+      : "";
+    if (segments.length === 2) {
+      return `${workspaceBreadCrumb} / ${folderBreadCrumb}`;
+    }
+    const fileDetails = folderDetails?.files.find(
+      (file) => file.id === segments[2]
+    );
+    const fileBreadCrumb = fileDetails
+      ? `${fileDetails.iconId} ${fileDetails.title}`
+      : "";
+    if (segments.length === 3) {
+      return `${workspaceBreadCrumb} / ${folderBreadCrumb} / ${fileBreadCrumb}`;
+    }
+  }, [state, pathName]);
 
   const wrapperRef = useCallback(async (wrapper: any) => {
     if (typeof window !== "undefined") {
@@ -228,8 +264,21 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
                 Delete
               </Button>
             </div>
+            <span className="text-sm text-white">{details.inTrash}</span>
           </article>
         )}
+        <div
+          className="flex
+          flex-col-reverse
+          sm:flex-row
+          sm:justify-between
+          justify-center
+          sm:items-center
+          sm:p-2
+          p-8"
+        >
+          <div>{breadCrumbs}</div>
+        </div>
       </div>
       <div className="flex justify-center items-center flex-col mt-2 relative">
         <div id="container" ref={wrapperRef} className="max-w-[800]"></div>
