@@ -31,6 +31,7 @@ import {
   updateFolderStateAndDb,
   updateWorkspaceStateAndDb,
 } from "@/lib/server-actions/db-actions";
+import { XCircle } from "lucide-react";
 
 interface QuillEditorProps {
   dirType: "workspace" | "folder" | "file";
@@ -46,6 +47,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   const [quill, setQuill] = useState<any>(null);
   const [collaborators, setCollaborators] = useState<User[]>(DUMMY_USER_DATA); // FIXME: remove this data
   const [saving, setSaving] = useState(false);
+  const [deletingBanner, setDeletingBanner] = useState(false);
   const [bannerUrl, setBannerUrl] = useState<string>();
 
   const details = useMemo(() => {
@@ -258,6 +260,48 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
       });
     }
   };
+
+  const deleteBanner = async () => {
+    if (!fileId) return;
+    setDeletingBanner(true);
+    if (details.bannerUrl) {
+      await supabase.storage.from("file-banner").remove([details.bannerUrl]);
+    }
+    if (dirType === "workspace") {
+      await updateWorkspaceStateAndDb({
+        dispatch,
+        workspaceId: fileId,
+        data: { bannerUrl: "" },
+        error: "Could not delete banner",
+        success: "Banner deleted successfully",
+      });
+    }
+    if (dirType === "folder") {
+      if (!workspaceId) return;
+      await updateFolderStateAndDb({
+        dispatch,
+        workspaceId,
+        folderId: fileId,
+        data: { bannerUrl: "" },
+        error: "Could not delete banner",
+        success: "Banner deleted successfully",
+      });
+    }
+    if (dirType === "file") {
+      if (!workspaceId || !folderId) return;
+      await updateFileStateAndDb({
+        dispatch,
+        workspaceId,
+        folderId,
+        fileId,
+        data: { bannerUrl: "" },
+        error: "Could not delete banner",
+        success: "Banner deleted successfully",
+      });
+    }
+    setDeletingBanner(false);
+  };
+
   return (
     <>
       <div className="relative">
@@ -412,7 +456,36 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
             >
               {details.bannerUrl ? "Update Banner" : "Add Banner"}
             </BannerUpload>
+            {details.bannerUrl && (
+              <Button
+                disabled={deletingBanner}
+                onClick={deleteBanner}
+                variant="ghost"
+                className="gap-2
+                hover:bg-background
+                flex
+                items-center
+                justify-center
+                mt-2
+                text-sm
+                text-muted-foreground
+                w-36
+                p-2
+                rounded-md"
+              >
+                <XCircle size={16} />
+                <span className="whitespace-nowrap font-normal">
+                  Remove Banner
+                </span>
+              </Button>
+            )}
           </div>
+          <span className="text-muted-foreground text-3xl font-bold h-9">
+            {details.title}
+          </span>
+          <span className="text-muted-foreground text-sm ml-1">
+            {dirType.toUpperCase()}
+          </span>
         </div>
         <div id="container" ref={wrapperRef} className="max-w-[800]"></div>
       </div>
