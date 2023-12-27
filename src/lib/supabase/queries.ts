@@ -122,16 +122,7 @@ export const getFileDetails = async (fileId: string) => {
 export const getPrivateWorkspaces = async (userId: string) => {
   if (!userId) return [];
   const privateWorkspaces = (await db
-    .select({
-      id: workspaces.id,
-      createdAt: workspaces.createdAt,
-      workspaceOwner: workspaces.workspaceOwner,
-      title: workspaces.title,
-      iconId: workspaces.iconId,
-      data: workspaces.data,
-      inTrash: workspaces.inTrash,
-      logo: workspaces.logo,
-    })
+    .select()
     .from(workspaces)
     .where(
       and(
@@ -159,6 +150,7 @@ export const getCollaboratingWorkspaces = async (userId: string) => {
       data: workspaces.data,
       inTrash: workspaces.inTrash,
       logo: workspaces.logo,
+      bannerUrl: workspaces.bannerUrl,
     })
     .from(users)
     .innerJoin(collaborators, eq(users.id, collaborators.userId))

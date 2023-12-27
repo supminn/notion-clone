@@ -14,3 +14,7 @@ export const CreateWorkspaceFormSchema = z.object({
 });
 
 // using z.any for logo since it would cause an issue on the server side otherwise
+
+export const UploadBannerFromStorage = z.object({
+  banner: z.string().describe("Banner Image"),
+});

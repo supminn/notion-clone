@@ -44,7 +44,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   const [quill, setQuill] = useState<any>(null);
   const [collaborators, setCollaborators] = useState<User[]>(DUMMY_USER_DATA); // FIXME: remove this data
   const [saving, setSaving] = useState(false);
-  const [bannerUrl, setBannerUrl] = useState(BannerImage);
+  const [bannerUrl, setBannerUrl] = useState<string>();
 
   const details = useMemo(() => {
     const selectedDir = getSelectedDirectory({
@@ -113,14 +113,16 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
     }
   }, []);
 
-  // TODO: Create this storage bucket
-  // useEffect(() => {
-  //   if (details.bannerUrl) {
-  //     const imageUrl = supabase.storage
-  //       .from("file-banners")
-  //       .getPublicUrl(details.bannerUrl).data.publicUrl;
-  //   }
-  // }, [details, supabase.storage]);
+  useEffect(() => {
+    if (details.bannerUrl) {
+      const imageUrl = supabase.storage
+        .from("file-banner")
+        .getPublicUrl(details.bannerUrl).data.publicUrl;
+      if (imageUrl) {
+        setBannerUrl(imageUrl);
+      }
+    }
+  }, [details, supabase.storage]);
 
   const restoreFromTrash = async () => {
     if (dirType === "file") {
@@ -420,9 +422,11 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
       {details.bannerUrl && (
         <div className="relative w-full h-[200px]">
           <Image
-            src={bannerUrl}
+            src={bannerUrl ?? BannerImage}
             className="w-full md:h-48 h-20 object-cover"
             alt="Banner Image"
+            width={200}
+            height={50}
           />
         </div>
       )}

@@ -166,7 +166,7 @@ export const DUMMY_USER_DATA = [
     id: "1",
     email: "user1@example.com",
     fullName: "User One",
-    avatarUrl: "https://example.com/avatar/user1.jpg",
+    avatarUrl: "",
     billingAddress: {
       /* billing address data */
     },
@@ -179,7 +179,7 @@ export const DUMMY_USER_DATA = [
     id: "2",
     email: "user2@example.com",
     fullName: "User Two",
-    avatarUrl: "https://example.com/avatar/user2.jpg",
+    avatarUrl: "",
     billingAddress: {
       /* billing address data */
     },

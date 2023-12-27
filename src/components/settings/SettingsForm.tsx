@@ -93,7 +93,7 @@ const SettingsForm = () => {
     const uuid = v4();
     setUploadingLogo(true);
     // supabse suggests to create a new line item each time than to replace the existing one. Storage takes some time to update the existing data.
-    // TODO: remove the older data while adding this new line item
+    // TODO: move this into utils and make it common for all the 3 storage buckets
     const prevLogoId = state.workspaces.find(
       (workspace) => workspace.id === workspaceId
     )?.logo;
@@ -130,7 +130,6 @@ const SettingsForm = () => {
       const res = await supabase.storage
         .from("workspace-logos")
         .remove([prevLogoId]);
-      console.log("Logging res", res);
     }
     setUploadingLogo(false);
   };
