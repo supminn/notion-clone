@@ -5,7 +5,6 @@ import BannerUploadForm from "./BannerUploadForm";
 
 interface BannerUploadProps {
   type: "workspace" | "folder" | "file";
-  details: File | Folder | Workspace;
   id: string;
   children: React.ReactNode;
   className?: string;
@@ -13,7 +12,6 @@ interface BannerUploadProps {
 
 const BannerUpload: FC<BannerUploadProps> = ({
   type,
-  details,
   id,
   children,
   className,
@@ -21,7 +19,7 @@ const BannerUpload: FC<BannerUploadProps> = ({
   return (
     <CustomDialogTrigger
       header="Upload Banner"
-      content={<BannerUploadForm type={type} details={details} id={id} />}
+      content={<BannerUploadForm type={type} id={id} />}
       className={className}
     >
       {children}

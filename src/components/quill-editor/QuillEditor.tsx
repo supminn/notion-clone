@@ -10,9 +10,12 @@ import {
   deleteFile,
   deleteFolder,
   deleteWorkspace,
+  getFileDetails,
+  getFolderDetails,
+  getWorkspaceDetails,
 } from "@/lib/supabase/queries";
 import { toast } from "../ui/use-toast";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Tooltip,
   TooltipContent,
@@ -44,8 +47,9 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   // render the quill editor and use socket.io to show real time data updates
   const supabase = createClientComponentClient();
   const pathName = usePathname();
+  const router = useRouter();
   const { state, workspaceId, folderId, dispatch } = useAppState();
-  const { socket } = useSocket();
+  const { socket, isConnected } = useSocket();
   const [quill, setQuill] = useState<any>(null);
   const [collaborators, setCollaborators] = useState<User[]>(DUMMY_USER_DATA); // FIXME: remove this data
   const [saving, setSaving] = useState(false);
@@ -129,6 +133,67 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
       }
     }
   }, [details, supabase.storage]);
+
+  useEffect(() => {
+    if (!fileId) return;
+    const fetchInformation = async () => {
+      if (dirType === "file") {
+        const { data, error } = await getFileDetails(fileId);
+        if (error || !data) return router.replace("/dashboard");
+        if (!data[0]) {
+          if (!workspaceId) return;
+          return router.replace(`/dashboard/${workspaceId}`);
+        }
+        if (!workspaceId || quill === null) return;
+        if (!data[0].data) return;
+        quill.setContents(JSON.parse(data[0].data || ""));
+        await updateFileStateAndDb({
+          dispatch,
+          workspaceId,
+          folderId: data[0].folderId,
+          fileId,
+          data: { data: data[0].data },
+        });
+      }
+      if (dirType === "folder") {
+        const { data, error } = await getFolderDetails(fileId);
+        if (error || !data) return router.replace("/dashboard");
+        if (!data[0]) {
+          if (!workspaceId) return;
+          return router.replace(`/dashboard/${workspaceId}`);
+        }
+        if (!workspaceId || quill === null) return;
+        if (!data[0].data) return;
+        quill.setContents(JSON.parse(data[0].data || ""));
+        await updateFolderStateAndDb({
+          dispatch,
+          workspaceId,
+          folderId: fileId,
+          data: { data: data[0].data },
+        });
+      }
+      if (dirType === "workspace") {
+        const { data, error } = await getWorkspaceDetails(fileId);
+        if (error || !data) return router.replace("/dashboard");
+        if (!workspaceId || quill === null) return;
+        if (!data[0].data) return;
+        quill.setContents(JSON.parse(data[0].data || ""));
+        await updateWorkspaceStateAndDb({
+          dispatch,
+          workspaceId: fileId,
+          data: { data: data[0].data },
+        });
+      }
+    };
+
+    fetchInformation();
+  }, [fileId, workspaceId, dirType, quill, dispatch, router]);
+
+  // rooms for our application
+  useEffect(() => {
+    if (socket === null || quill === null || !fileId) return;
+    socket.emit("create-room", fileId);
+  }, [socket, quill, fileId]);
 
   const restoreFromTrash = async () => {
     if (dirType === "file") {
@@ -306,6 +371,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
 
   return (
     <>
+      {isConnected ? "connected" : "not connected"}
       <div className="relative">
         {details.inTrash && (
           <article
@@ -445,7 +511,6 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
           </div>
           <div className="flex">
             <BannerUpload
-              details={details}
               id={fileId}
               type={dirType}
               className="mt-2

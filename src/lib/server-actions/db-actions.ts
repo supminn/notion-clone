@@ -7,8 +7,8 @@ type WorkspaceUpdateTypes = {
   data: Partial<Workspace>;
   workspaceId: string;
   dispatch: (actions: Action) => void;
-  error: string;
-  success: string;
+  error?: string;
+  success?: string;
 };
 export const updateWorkspaceStateAndDb = async ({
   dispatch,
@@ -26,12 +26,12 @@ export const updateWorkspaceStateAndDb = async ({
     toast({
       title: "Error",
       variant: "destructive",
-      description: error,
+      description: error ?? "",
     });
   } else {
     toast({
       title: "Success",
-      description: success,
+      description: success ?? "",
     });
   }
 };
@@ -41,8 +41,8 @@ type FolderUpdateTypes = {
   workspaceId: string;
   folderId: string;
   dispatch: (actions: Action) => void;
-  error: string;
-  success: string;
+  error?: string;
+  success?: string;
 };
 export const updateFolderStateAndDb = async ({
   dispatch,
@@ -61,12 +61,12 @@ export const updateFolderStateAndDb = async ({
     toast({
       title: "Error",
       variant: "destructive",
-      description: error,
+      description: error ?? "",
     });
   } else {
     toast({
       title: "Success",
-      description: success,
+      description: success ?? "",
     });
   }
 };
@@ -77,8 +77,8 @@ type FileUpdateTypes = {
   folderId: string;
   fileId: string;
   dispatch: (actions: Action) => void;
-  error: string;
-  success: string;
+  error?: string;
+  success?: string;
 };
 export const updateFileStateAndDb = async ({
   dispatch,
@@ -98,12 +98,12 @@ export const updateFileStateAndDb = async ({
     toast({
       title: "Error",
       variant: "destructive",
-      description: error,
+      description: error ?? "",
     });
   } else {
     toast({
       title: "Success",
-      description: success,
+      description: success ?? "",
     });
   }
 };

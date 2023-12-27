@@ -19,11 +19,10 @@ import {
 } from "@/lib/server-actions/db-actions";
 
 interface BannerUploadFormProps {
-  details: File | Folder | Workspace;
   type: "workspace" | "folder" | "file";
   id: string;
 }
-const BannerUploadForm: FC<BannerUploadFormProps> = ({ details, type, id }) => {
+const BannerUploadForm: FC<BannerUploadFormProps> = ({ type, id }) => {
   const supabase = createClientComponentClient();
   const { state, workspaceId, folderId, dispatch } = useAppState();
   const {
