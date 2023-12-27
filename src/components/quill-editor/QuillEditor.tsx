@@ -32,6 +32,7 @@ import {
   updateWorkspaceStateAndDb,
 } from "@/lib/server-actions/db-actions";
 import { XCircle } from "lucide-react";
+import { useSocket } from "@/lib/providers/socket-provider";
 
 interface QuillEditorProps {
   dirType: "workspace" | "folder" | "file";
@@ -44,6 +45,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   const supabase = createClientComponentClient();
   const pathName = usePathname();
   const { state, workspaceId, folderId, dispatch } = useAppState();
+  const { socket } = useSocket();
   const [quill, setQuill] = useState<any>(null);
   const [collaborators, setCollaborators] = useState<User[]>(DUMMY_USER_DATA); // FIXME: remove this data
   const [saving, setSaving] = useState(false);
