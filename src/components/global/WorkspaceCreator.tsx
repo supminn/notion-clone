@@ -20,13 +20,12 @@ import { useRouter } from "next/navigation";
 import CollaboratorSearch from "./CollaboratorSearch";
 import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useToast } from "../ui/use-toast";
 import { DialogClose } from "../ui/dialog";
+import { toast } from "../ui/use-toast";
 
 const WorkspaceCreator = () => {
   const router = useRouter();
   const { user } = useSupabaseUser();
-  const { toast } = useToast();
   const [permissions, setPermissions] = useState("private");
   const [title, setTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);

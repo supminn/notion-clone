@@ -10,12 +10,16 @@ import {
 import clsx from "clsx";
 import EmojiPicker from "../global/EmojiPicker";
 import { createFile, updateFile, updateFolder } from "@/lib/supabase/queries";
-import { useToast } from "../ui/use-toast";
 import TooltipWrapper from "../global/TooltipWrapper";
 import { PlusIcon, Trash } from "lucide-react";
 import { File } from "@/lib/supabase/supabase.types";
 import { v4 } from "uuid";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import {
+  updateFileStateAndDb,
+  updateFolderStateAndDb,
+} from "@/lib/server-actions/db-actions";
+import { toast } from "../ui/use-toast";
 
 interface DropdownProps {
   title: string;
@@ -25,7 +29,6 @@ interface DropdownProps {
 }
 
 const Dropdown: React.FC<DropdownProps> = ({ title, id, listType, iconId }) => {
-  const { toast } = useToast();
   const { user } = useSupabaseUser();
   const { state, dispatch, workspaceId, folderId } = useAppState();
   const [isEditting, setIsEditting] = useState(false);
@@ -168,52 +171,26 @@ const Dropdown: React.FC<DropdownProps> = ({ title, id, listType, iconId }) => {
   const onChangeEmojiHandler = async (selectedEmoji: string) => {
     if (!workspaceId) return;
     if (listType === "folder") {
-      dispatch({
-        type: "UPDATE_FOLDER",
-        payload: {
-          workspaceId,
-          folderId: id,
-          folder: { iconId: selectedEmoji },
-        },
+      await updateFolderStateAndDb({
+        dispatch,
+        workspaceId,
+        folderId: id,
+        data: { iconId: selectedEmoji },
+        error: "Could not update the emoji for this folder",
+        success: "Updated the emoji for this folder",
       });
-      const { error } = await updateFolder({ iconId: selectedEmoji }, id);
-      if (error) {
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: "Could not update the emoji for this folder",
-        });
-      } else {
-        toast({
-          title: "Success",
-          description: "Updated the emoji for this folder",
-        });
-      }
     }
     if (listType === "file") {
       if (!folderId) return;
-      dispatch({
-        type: "UPDATE_FILE",
-        payload: {
-          workspaceId,
-          folderId,
-          fileId: id,
-          file: { iconId: selectedEmoji },
-        },
+      await updateFileStateAndDb({
+        dispatch,
+        workspaceId,
+        folderId,
+        fileId: id,
+        data: { iconId: selectedEmoji },
+        error: "Could not update the emoji for this file",
+        success: "Updated the emoji for this file",
       });
-      const { error } = await updateFile({ iconId: selectedEmoji }, id);
-      if (error) {
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: "Could not update the emoji for this file",
-        });
-      } else {
-        toast({
-          title: "Success",
-          description: "Updated the emoji for this file",
-        });
-      }
     }
   };
 
@@ -250,51 +227,25 @@ const Dropdown: React.FC<DropdownProps> = ({ title, id, listType, iconId }) => {
   const moveToTrash = async () => {
     if (!workspaceId || !user?.email) return;
     if (listType === "folder") {
-      dispatch({
-        type: "UPDATE_FOLDER",
-        payload: {
-          folder: { inTrash: `Deleted by ${user?.email}` },
-          folderId: id,
-          workspaceId,
-        },
+      await updateFolderStateAndDb({
+        dispatch,
+        workspaceId,
+        folderId: id,
+        data: { inTrash: `Deleted by ${user?.email}` },
+        error: "Could not move this folder to trash",
+        success: "Folder moved to trash",
       });
-      const { error } = await updateFolder(
-        { inTrash: `Deleted by ${user?.email}` },
-        id
-      );
-      if (error) {
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: "Could not move this folder to trash",
-        });
-      } else {
-        toast({ title: "Success", description: "Folder moved to trash" });
-      }
     } else if (listType === "file") {
       if (!folderId) return;
-      dispatch({
-        type: "UPDATE_FILE",
-        payload: {
-          file: { inTrash: `Deleted by ${user?.email}` },
-          folderId,
-          fileId: id,
-          workspaceId,
-        },
+      await updateFileStateAndDb({
+        dispatch,
+        workspaceId,
+        folderId,
+        fileId: id,
+        data: { inTrash: `Deleted by ${user?.email}` },
+        error: "Could not move this file to trash",
+        success: "File moved to trash",
       });
-      const { error } = await updateFile(
-        { inTrash: `Deleted by ${user?.email}` },
-        id
-      );
-      if (error) {
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: "Could not move this file to trash",
-        });
-      } else {
-        toast({ title: "Success", description: "File moved to trash" });
-      }
     }
   };
 

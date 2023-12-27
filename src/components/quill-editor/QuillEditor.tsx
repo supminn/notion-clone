@@ -10,9 +10,6 @@ import {
   deleteFile,
   deleteFolder,
   deleteWorkspace,
-  updateFile,
-  updateFolder,
-  updateWorkspace,
 } from "@/lib/supabase/queries";
 import { toast } from "../ui/use-toast";
 import { usePathname } from "next/navigation";
@@ -29,6 +26,11 @@ import BannerImage from "../../../public/BannerImage.png";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import EmojiPicker from "../global/EmojiPicker";
 import BannerUpload from "../banner-upload/BannerUpload";
+import {
+  updateFileStateAndDb,
+  updateFolderStateAndDb,
+  updateWorkspaceStateAndDb,
+} from "@/lib/server-actions/db-actions";
 
 interface QuillEditorProps {
   dirType: "workspace" | "folder" | "file";
@@ -127,62 +129,35 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   const restoreFromTrash = async () => {
     if (dirType === "file") {
       if (!folderId || !workspaceId) return;
-      dispatch({
-        type: "UPDATE_FILE",
-        payload: { workspaceId, folderId, file: { inTrash: "" }, fileId },
+      await updateFileStateAndDb({
+        dispatch,
+        workspaceId,
+        folderId,
+        fileId,
+        data: { inTrash: "" },
+        error: "Could not restore file",
+        success: "Restored file successfully",
       });
-      const { error } = await updateFile({ inTrash: "" }, fileId);
-      if (error) {
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: "Could not restore file",
-        });
-      } else {
-        toast({
-          title: "Success",
-          description: "Restored file successfully",
-        });
-      }
     }
     if (dirType === "folder") {
       if (!workspaceId) return;
-      dispatch({
-        type: "UPDATE_FOLDER",
-        payload: { workspaceId, folder: { inTrash: "" }, folderId: fileId },
+      await updateFolderStateAndDb({
+        dispatch,
+        workspaceId,
+        folderId: fileId,
+        data: { inTrash: "" },
+        error: "Could not restore folder",
+        success: "Restored folder successfully",
       });
-      const { error } = await updateFolder({ inTrash: "" }, fileId);
-      if (error) {
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: "Could not restore folder",
-        });
-      } else {
-        toast({
-          title: "Success",
-          description: "Restored folder successfully",
-        });
-      }
     }
     if (dirType === "workspace") {
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: { workspaceId: fileId, workspace: { inTrash: "" } },
+      await updateWorkspaceStateAndDb({
+        dispatch,
+        workspaceId: fileId,
+        data: { inTrash: "" },
+        error: "Could not restore workspace",
+        success: "Restored workspace successfully",
       });
-      const { error } = await updateWorkspace({ inTrash: "" }, fileId);
-      if (error) {
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: "Could not restore workspace",
-        });
-      } else {
-        toast({
-          title: "Success",
-          description: "Restored workspace successfully",
-        });
-      }
     }
   };
 
@@ -251,63 +226,36 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   const onEmojiChange = async (icon: string) => {
     if (!fileId) return;
     if (dirType === "workspace") {
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: { workspace: { iconId: icon }, workspaceId: fileId },
+      await updateWorkspaceStateAndDb({
+        dispatch,
+        workspaceId: fileId,
+        data: { iconId: icon },
+        error: "Could not update emoji",
+        success: "Emoji updated successfully",
       });
-      const { error } = await updateWorkspace({ iconId: icon }, fileId);
-      if (error) {
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: "Could not update emoji",
-        });
-      } else {
-        toast({
-          title: "Success",
-          description: "Emoji updated successfully",
-        });
-      }
     }
     if (dirType === "folder") {
       if (!workspaceId) return;
-      dispatch({
-        type: "UPDATE_FOLDER",
-        payload: { folder: { iconId: icon }, workspaceId, folderId: fileId },
+      await updateFolderStateAndDb({
+        dispatch,
+        workspaceId,
+        folderId: fileId,
+        data: { iconId: icon },
+        error: "Could not update emoji",
+        success: "Emoji updated successfully",
       });
-      const { error } = await updateFolder({ iconId: icon }, fileId);
-      if (error) {
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: "Could not update emoji",
-        });
-      } else {
-        toast({
-          title: "Success",
-          description: "Emoji updated successfully",
-        });
-      }
     }
     if (dirType === "file") {
       if (!workspaceId || !folderId) return;
-      dispatch({
-        type: "UPDATE_FILE",
-        payload: { file: { iconId: icon }, workspaceId, folderId, fileId },
+      await updateFileStateAndDb({
+        dispatch,
+        workspaceId,
+        folderId,
+        fileId,
+        data: { iconId: icon },
+        error: "Could not update emoji",
+        success: "Emoji updated successfully",
       });
-      const { error } = await updateFile({ iconId: icon }, fileId);
-      if (error) {
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: "Could not update emoji",
-        });
-      } else {
-        toast({
-          title: "Success",
-          description: "Emoji updated successfully",
-        });
-      }
     }
   };
   return (

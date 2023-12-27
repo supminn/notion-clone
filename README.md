@@ -102,5 +102,4 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - Add loader while changing workspaces, login or signup page
 - If folder is `inTrash` make sure that the files within this folder are also updated to `isTrash`. Similarly, the same approach for workspace too. (giving some TypeScript error)
 - Create `avatars` and `file-banner` storages in supabase and access corresponding data from there.
-- Extract out db call and dispatch call into a single function. This could be `services`
 - Close upload banner modal after upload

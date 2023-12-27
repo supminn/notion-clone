@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { useToast } from "../ui/use-toast";
 import { useAppState } from "@/lib/providers/state-provider";
 import { User, Workspace } from "@/lib/supabase/supabase.types";
 import { useRouter } from "next/navigation";
@@ -28,10 +27,10 @@ import { ScrollArea } from "../ui/scroll-area";
 import CollaboratorSearch from "../global/CollaboratorSearch";
 import { Alert, AlertDescription } from "../ui/alert";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { updateWorkspaceStateAndDb } from "@/lib/server-actions/db-actions";
 
 const SettingsForm = () => {
   const supabase = createClientComponentClient();
-  const { toast } = useToast();
   const { state, dispatch, workspaceId } = useAppState();
   const { user } = useSupabaseUser();
   const router = useRouter();
@@ -105,31 +104,16 @@ const SettingsForm = () => {
       });
     if (error) throw new Error("Unable to upload file to workspace logos");
     if (data) {
-      const { error: dbError } = await updateWorkspace(
-        { logo: data.path },
-        workspaceId
-      );
-      if (dbError) {
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: "Could not update workspace logo",
-        });
-      } else {
-        dispatch({
-          type: "UPDATE_WORKSPACE",
-          payload: { workspace: { logo: data.path }, workspaceId },
-        });
-        toast({
-          title: "Success",
-          description: "Updated workspace logo",
-        });
-      }
+      await updateWorkspaceStateAndDb({
+        dispatch,
+        workspaceId,
+        data: { logo: data.path },
+        error: "Could not update workspace logo",
+        success: "Updated workspace logo",
+      });
     }
     if (prevLogoId) {
-      const res = await supabase.storage
-        .from("workspace-logos")
-        .remove([prevLogoId]);
+      await supabase.storage.from("workspace-logos").remove([prevLogoId]);
     }
     setUploadingLogo(false);
   };
@@ -137,17 +121,16 @@ const SettingsForm = () => {
   // onClickAlerts
   const onDeleteHandler = async () => {
     if (!workspaceId) return;
-    await updateWorkspace({ inTrash: `Deleted by ${user?.id}` }, workspaceId);
-    toast({ title: "Success", description: "Deleted your workspace" });
-    dispatch({
-      type: "UPDATE_WORKSPACE",
-      payload: {
-        workspace: { inTrash: `Deleted by ${user?.id}` },
-        workspaceId,
-      },
+    await updateWorkspaceStateAndDb({
+      dispatch,
+      workspaceId,
+      data: { inTrash: `Deleted by ${user?.id}` },
+      error: "Could not delete the workspace",
+      success: "Deleted your workspace",
     });
     router.replace(`/dashboard`);
   };
+
   // Fetching avatar details from supabase storage
   // Get workspace details
   // Get all collaborators

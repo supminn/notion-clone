@@ -20,7 +20,7 @@ interface AppState {
   workspaces: appWorkspacesType[] | [];
 }
 
-type Action =
+export type Action =
   | { type: "ADD_WORKSPACE"; payload: appWorkspacesType }
   | { type: "DELETE_WORKSPACE"; payload: { workspaceId: string } }
   | {

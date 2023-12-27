@@ -12,11 +12,11 @@ import { z } from "zod";
 import { v4 } from "uuid";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useToast } from "../ui/use-toast";
 import { Button } from "../ui/button";
 import Loader from "../global/Loader";
 import { createWorkspace } from "@/lib/supabase/queries";
 import { useAppState } from "@/lib/providers/state-provider";
+import { toast } from "../ui/use-toast";
 
 interface DashboardSetupProps {
   user: AuthUser;
@@ -27,7 +27,6 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
   user,
   subscription,
 }) => {
-  const { toast } = useToast();
   const router = useRouter();
   const { dispatch } = useAppState();
   const [selectedEmoji, setSelectedEmoji] = useState("💼");

@@ -13,11 +13,10 @@ import { Button } from "../ui/button";
 import Loader from "../global/Loader";
 import { v4 } from "uuid";
 import {
-  updateFile,
-  updateFolder,
-  updateWorkspace,
-} from "@/lib/supabase/queries";
-import { toast } from "../ui/use-toast";
+  updateFileStateAndDb,
+  updateFolderStateAndDb,
+  updateWorkspaceStateAndDb,
+} from "@/lib/server-actions/db-actions";
 
 interface BannerUploadFormProps {
   details: File | Folder | Workspace;
@@ -65,28 +64,15 @@ const BannerUploadForm: FC<BannerUploadFormProps> = ({ details, type, id }) => {
           ?.folders.find((folder) => folder.id === folderId)
           ?.files.find((file) => file.id === id)?.bannerUrl;
         const filePath = await uploadBanner();
-        dispatch({
-          type: "UPDATE_FILE",
-          payload: {
-            file: { bannerUrl: filePath },
-            fileId: id,
-            workspaceId,
-            folderId,
-          },
+        await updateFileStateAndDb({
+          dispatch,
+          workspaceId,
+          folderId,
+          fileId: id,
+          data: { bannerUrl: filePath },
+          error: "Could not upload banner for this file",
+          success: "Uploaded banner for this file",
         });
-        const { error } = await updateFile({ bannerUrl: filePath }, id);
-        if (error) {
-          toast({
-            title: "Error",
-            variant: "destructive",
-            description: "Could not upload banner for this file",
-          });
-        } else {
-          toast({
-            title: "Success",
-            description: "Uploaded banner for this file",
-          });
-        }
       }
       if (type === "folder") {
         if (!workspaceId) return;
@@ -94,55 +80,30 @@ const BannerUploadForm: FC<BannerUploadFormProps> = ({ details, type, id }) => {
           .find((workspace) => workspace.id === workspaceId)
           ?.folders.find((folder) => folder.id === id)?.bannerUrl;
         const filePath = await uploadBanner();
-        dispatch({
-          type: "UPDATE_FOLDER",
-          payload: {
-            folder: { bannerUrl: filePath },
-            workspaceId,
-            folderId: id,
-          },
+        await updateFolderStateAndDb({
+          dispatch,
+          data: { bannerUrl: filePath },
+          workspaceId,
+          folderId: id,
+          error: "Could not upload banner for this folder",
+          success: "Uploaded banner for this folder",
         });
-        const { error } = await updateFolder({ bannerUrl: filePath }, id);
-        if (error) {
-          toast({
-            title: "Error",
-            variant: "destructive",
-            description: "Could not upload banner for this folder",
-          });
-        } else {
-          toast({
-            title: "Success",
-            description: "Uploaded banner for this folder",
-          });
-        }
       }
       if (type === "workspace") {
         prevBannerId = state.workspaces.find(
           (workspace) => workspace.id === id
         )?.bannerUrl;
         const filePath = await uploadBanner();
-        dispatch({
-          type: "UPDATE_WORKSPACE",
-          payload: { workspace: { bannerUrl: filePath }, workspaceId: id },
+        await updateWorkspaceStateAndDb({
+          dispatch,
+          data: { bannerUrl: filePath },
+          workspaceId: id,
+          error: "Could not upload banner for this workspace",
+          success: "Uploaded banner for this workspace",
         });
-        const { error } = await updateWorkspace({ bannerUrl: filePath }, id);
-        if (error) {
-          toast({
-            title: "Error",
-            variant: "destructive",
-            description: "Could not upload banner for this workspace",
-          });
-        } else {
-          toast({
-            title: "Success",
-            description: "Uploaded banner for this workspace",
-          });
-        }
       }
       if (prevBannerId) {
-        const res = await supabase.storage
-          .from("file-banner")
-          .remove([prevBannerId]);
+        await supabase.storage.from("file-banner").remove([prevBannerId]);
       }
     } catch (error) {
       console.log("Error in uploading banner");
