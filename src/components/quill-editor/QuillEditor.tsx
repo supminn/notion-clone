@@ -263,6 +263,21 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
     };
   }, [quill, socket, fileId, user, workspaceId, folderId, dirType, dispatch]);
 
+  // recieve the socket changes for other users
+  useEffect(() => {
+    if (quill === null || socket === null) return;
+    const socketHandler = (deltas: any, id: string) => {
+      if (id === fileId) {
+        quill.updateContents(deltas);
+      }
+    };
+    socket.on("receive-changes", socketHandler);
+
+    return () => {
+      socket.off("receive-changes", socketHandler);
+    };
+  }, [quill, socket, fileId]);
+
   const restoreFromTrash = async () => {
     if (dirType === "file") {
       if (!folderId || !workspaceId) return;

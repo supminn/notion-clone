@@ -95,7 +95,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - next/dynamic is a composite of React.lazy() and Suspense. It behaves the same way in the app and pages directories to allow for incremental migration.
 - To protect your application from malicious users, configuration is required in order to use external images. This ensures that only external images from your account can be served from the Next.js Image Optimization API. These external images can be configured with the `remotePatterns` property in your `next.config.js` file
 - According to PostgresJS official website, PostgresJS is the fastest fully featured PostgreSQL client for Node.js and Deno.
-- QuillJS, delta -> to decide which real-time cursor should take precedence.
+- QuillJS, delta -> to decide which real-time cursor should take precedence. **Read more about how things work**
 - You cannot use an API folder in a Next.js application while using Socket.IO because Socket.IO requires a server to handle WebSocket connections, and Next.js doesn't support server-side code in its API routes. While Socket.IO requires a persistent server to handle WebSocket connections, the serverless functions used in the api folder are not suitable for maintaining WebSocket connections.
 
 ## Todo
