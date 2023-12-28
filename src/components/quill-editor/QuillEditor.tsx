@@ -2,7 +2,14 @@
 import { DUMMY_USER_DATA, TOOLBAR_OPTIONS } from "@/lib/contants";
 import { useAppState } from "@/lib/providers/state-provider";
 import { File, Folder, User, Workspace } from "@/lib/supabase/supabase.types";
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import "quill/dist/quill.snow.css";
 import { getSelectedDirectory } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -36,6 +43,7 @@ import {
 } from "@/lib/server-actions/db-actions";
 import { XCircle } from "lucide-react";
 import { useSocket } from "@/lib/providers/socket-provider";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 
 interface QuillEditorProps {
   dirType: "workspace" | "folder" | "file";
@@ -49,12 +57,14 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   const pathName = usePathname();
   const router = useRouter();
   const { state, workspaceId, folderId, dispatch } = useAppState();
-  const { socket, isConnected } = useSocket();
+  const { user } = useSupabaseUser();
+  const { socket } = useSocket();
   const [quill, setQuill] = useState<any>(null);
   const [collaborators, setCollaborators] = useState<User[]>(DUMMY_USER_DATA); // FIXME: remove this data
   const [saving, setSaving] = useState(false);
   const [deletingBanner, setDeletingBanner] = useState(false);
   const [bannerUrl, setBannerUrl] = useState<string>();
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const details = useMemo(() => {
     const selectedDir = getSelectedDirectory({
@@ -194,6 +204,60 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
     if (socket === null || quill === null || !fileId) return;
     socket.emit("create-room", fileId);
   }, [socket, quill, fileId]);
+
+  // send quill changes to all the clients
+  useEffect(() => {
+    if (quill === null || socket === null || !fileId || !user) return;
+    // WIP cursors update
+    const selectionChangeHandler = () => {};
+    const quillHandler = (delta: any, oldDelta: any, source: any) => {
+      if (source !== "user") return; // if the user did not create this change, we don't want to make any changes
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      setSaving(true);
+      const contents = quill.getContents();
+      const quillLength = quill.getLength();
+      saveTimerRef.current = setTimeout(async () => {
+        if (contents && quillLength !== 1 && fileId) {
+          if (dirType === "workspace") {
+            await updateWorkspaceStateAndDb({
+              dispatch,
+              workspaceId: fileId,
+              data: { data: JSON.stringify(contents) },
+            });
+          }
+          if (dirType === "folder") {
+            if (!workspaceId) return;
+            await updateFolderStateAndDb({
+              dispatch,
+              workspaceId,
+              folderId: fileId,
+              data: { data: JSON.stringify(contents) },
+            });
+          }
+          if (dirType === "file") {
+            if (!workspaceId || !folderId) return;
+            await updateFileStateAndDb({
+              dispatch,
+              workspaceId,
+              folderId,
+              fileId,
+              data: { data: JSON.stringify(contents) },
+            });
+          }
+        }
+        setSaving(false);
+      }, 850);
+      socket.emit("send-changes", delta, fileId);
+    };
+    quill.on("text-change", quillHandler);
+    // WIP cursors selection handler
+
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      quill.off("text-change", quillHandler);
+      // remove selection handler
+    };
+  }, [quill, socket, fileId, user, workspaceId, folderId, dirType, dispatch]);
 
   const restoreFromTrash = async () => {
     if (dirType === "file") {
@@ -371,7 +435,6 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
 
   return (
     <>
-      {isConnected ? "connected" : "not connected"}
       <div className="relative">
         {details.inTrash && (
           <article
