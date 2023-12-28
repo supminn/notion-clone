@@ -78,6 +78,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - [No need for this](https://youtu.be/A3l6YYkXzzg?t=16223) as we have added delete on cascade.
 - At [Timestamp](https://youtu.be/A3l6YYkXzzg?t=22405) didn't talk about how the profile section is created in the sidebar bottom.
 - [Timestamp](https://youtu.be/A3l6YYkXzzg?t=25582) we delete the workspace from db instead of adding it to trash. I have added the trash feature.
+- [UserCard](https://youtu.be/A3l6YYkXzzg?t=34383) component is not available in the video
 
 ## My Learnings
 
@@ -97,6 +98,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - According to PostgresJS official website, PostgresJS is the fastest fully featured PostgreSQL client for Node.js and Deno.
 - QuillJS, delta -> to decide which real-time cursor should take precedence. **Read more about how things work**
 - You cannot use an API folder in a Next.js application while using Socket.IO because Socket.IO requires a server to handle WebSocket connections, and Next.js doesn't support server-side code in its API routes. While Socket.IO requires a persistent server to handle WebSocket connections, the serverless functions used in the api folder are not suitable for maintaining WebSocket connections.
+- We create our own quill-cursor module to track the user's cursor at real time.
 
 ## Todo
 

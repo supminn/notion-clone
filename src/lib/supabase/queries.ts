@@ -197,6 +197,7 @@ export const getCollaborators = async (workspaceId: string) => {
   // filter only the existing users as collaborators
   return resolvedUsers.filter(Boolean) as User[];
 };
+
 export const addCollaborators = async (users: User[], workspaceId: string) => {
   const response = users.forEach(async (user: User) => {
     const userExists = await db.query.collaborators.findFirst({
@@ -337,4 +338,18 @@ export const updateWorkspace = async (
     console.log("Error in updateWorkspace", error);
     return { data: null, error: "Error in updateWorkspace" };
   }
+};
+
+export const findUser = async (userId: string) => {
+  const user = await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.id, userId),
+  });
+  return user;
+
+  /*
+  let avatarPath;
+  if(response.avatarPath){
+    avatarPath = supabase.storage.from('avatars').getPublicUrl(response.avatarUrl)?.data.publicUrl
+  }
+  */
 };

@@ -1,6 +1,5 @@
 "use client";
 import {
-  DUMMY_USER_DATA,
   TOOLBAR_OPTIONS,
   UPDATE_USER_CHANGES_TIMER_VALUE,
 } from "@/lib/contants";
@@ -21,6 +20,7 @@ import {
   deleteFile,
   deleteFolder,
   deleteWorkspace,
+  findUser,
   getFileDetails,
   getFolderDetails,
   getWorkspaceDetails,
@@ -64,10 +64,11 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   const { user } = useSupabaseUser();
   const { socket } = useSocket();
   const [quill, setQuill] = useState<any>(null);
-  const [collaborators, setCollaborators] = useState<User[]>(DUMMY_USER_DATA); // FIXME: remove this data
+  const [collaborators, setCollaborators] = useState<User[]>(); // FIXME: remove this data
   const [saving, setSaving] = useState(false);
   const [deletingBanner, setDeletingBanner] = useState(false);
   const [bannerUrl, setBannerUrl] = useState<string>();
+  const [localCursors, setLocalCursors] = useState<any>([]); // type 'cursor' doesn't seem to be working here
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const details = useMemo(() => {
@@ -125,12 +126,16 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
       const editor = document.createElement("div");
       wrapper.append(editor);
       const Quill = (await import("quill")).default;
-      // WIP cursors
+      const QuillCursors = (await import("quill-cursors")).default;
+      // register the new module
+      Quill.register("modules/cursors", QuillCursors);
       const q = new Quill(editor, {
         theme: "snow",
         modules: {
           toolbar: TOOLBAR_OPTIONS,
-          // WIP cursors
+          cursors: {
+            transformOnTextChange: true,
+          },
         },
       });
       setQuill(q);
@@ -277,6 +282,57 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
       socket.off("receive-changes", socketHandler);
     };
   }, [quill, socket, fileId]);
+
+  useEffect(() => {
+    if (!fileId || quill === null) return;
+    // create a room
+    const room = supabase.channel(fileId);
+    const subscription = room
+      .on("presence", { event: "sync" }, () => {
+        const newState = room.presenceState();
+        const newCollaborators = Object.values(newState).flat() as any;
+        setCollaborators(newCollaborators);
+        if (user) {
+          const allCursors: any = [];
+          newCollaborators.forEach(
+            (collaborator: {
+              id: string;
+              email: string;
+              avatarUrl: string;
+            }) => {
+              if (collaborator.id !== user.id) {
+                const userCursor = quill.getModule("cursors");
+                userCursor.createCursor(
+                  collaborator.id,
+                  collaborator.email.split("@")[0],
+                  `#${Math.random().toString(16).slice(2, 8)}` // generates a random color for the user's cursor
+                );
+                allCursors.push(userCursor);
+              }
+            }
+          );
+          setLocalCursors(allCursors);
+        }
+      })
+      .subscribe(async (status) => {
+        if (status !== "SUBSCRIBED" || !user) return;
+        // make an API request to get the user information
+        const response = await findUser(user.id);
+        if (!response) return;
+        room.track({
+          id: user.id,
+          email: user.email?.split("@")[0],
+          avatarUrl: response.avatarUrl
+            ? supabase.storage.from("avatars").getPublicUrl(response.avatarUrl)
+                .data.publicUrl
+            : "",
+        });
+      });
+
+    return () => {
+      supabase.removeChannel(room);
+    };
+  }, [fileId, quill, supabase, user]);
 
   const restoreFromTrash = async () => {
     if (dirType === "file") {
@@ -538,7 +594,9 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
                         </AvatarFallback>
                       </Avatar>
                     </TooltipTrigger>
-                    <TooltipContent>{collaborator?.email}</TooltipContent>
+                    <TooltipContent className="cursor-pointer">
+                      {collaborator?.email}
+                    </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               ))}
