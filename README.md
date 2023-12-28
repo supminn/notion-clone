@@ -79,6 +79,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - At [Timestamp](https://youtu.be/A3l6YYkXzzg?t=22405) didn't talk about how the profile section is created in the sidebar bottom.
 - [Timestamp](https://youtu.be/A3l6YYkXzzg?t=25582) we delete the workspace from db instead of adding it to trash. I have added the trash feature.
 - [UserCard](https://youtu.be/A3l6YYkXzzg?t=34383) component is not available in the video
+- Real time text updates are working sometimes and not working rest of the times. Cursor update is never happening.
 
 ## My Learnings
 

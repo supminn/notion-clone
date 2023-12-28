@@ -217,8 +217,14 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   // send quill changes to all the clients
   useEffect(() => {
     if (quill === null || socket === null || !fileId || !user) return;
-    // WIP cursors update
-    const selectionChangeHandler = () => {};
+    // This function fires when the user clicks and selects any text on the editor. This highlights the user's cursor in real-time
+    const selectionChangeHandler = (cursorId: string) => {
+      return (range: any, oldRange: any, source: any) => {
+        if (source === "user" && cursorId) {
+          socket.emit("send-cursor-move", range, fileId, cursorId);
+        }
+      };
+    };
     const quillHandler = (delta: any, oldDelta: any, source: any) => {
       if (source !== "user") return; // if the user did not create this change, we don't want to make any changes
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
@@ -259,12 +265,12 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
       socket.emit("send-changes", delta, fileId);
     };
     quill.on("text-change", quillHandler);
-    // WIP cursors selection handler
+    quill.on("selection-change", selectionChangeHandler(user.id));
 
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
       quill.off("text-change", quillHandler);
-      // remove selection handler
+      quill.off("selection-change", selectionChangeHandler(user.id));
     };
   }, [quill, socket, fileId, user, workspaceId, folderId, dirType, dispatch]);
 
@@ -283,11 +289,11 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
     };
   }, [quill, socket, fileId]);
 
+  // create a room
   useEffect(() => {
     if (!fileId || quill === null) return;
-    // create a room
     const room = supabase.channel(fileId);
-    const subscription = room
+    room
       .on("presence", { event: "sync" }, () => {
         const newState = room.presenceState();
         const newCollaborators = Object.values(newState).flat() as any;
@@ -333,6 +339,26 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
       supabase.removeChannel(room);
     };
   }, [fileId, quill, supabase, user]);
+
+  // listen to cursor-move emit
+  useEffect(() => {
+    if (quill === null || socket === null || !fileId || !localCursors.length)
+      return;
+    const socketHandler = (range: any, roomId: string, cursorId: string) => {
+      if (roomId === fileId) {
+        const cursorToMove = localCursors.find(
+          (data: any) => data.cursors?.[0]?.id === cursorId
+        );
+        if (cursorToMove) {
+          cursorToMove.moveCursor(cursorId, range);
+        }
+      }
+    };
+    socket.on("receive-cursor-move", socketHandler);
+    return () => {
+      socket.off("receive-cursor-move", socketHandler);
+    };
+  }, [quill, socket, fileId, localCursors]);
 
   const restoreFromTrash = async () => {
     if (dirType === "file") {
@@ -594,9 +620,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
                         </AvatarFallback>
                       </Avatar>
                     </TooltipTrigger>
-                    <TooltipContent className="cursor-pointer">
-                      {collaborator?.email}
-                    </TooltipContent>
+                    <TooltipContent>{collaborator?.email}</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               ))}
