@@ -1,5 +1,9 @@
 "use client";
-import { DUMMY_USER_DATA, TOOLBAR_OPTIONS } from "@/lib/contants";
+import {
+  DUMMY_USER_DATA,
+  TOOLBAR_OPTIONS,
+  UPDATE_USER_CHANGES_TIMER_VALUE,
+} from "@/lib/contants";
 import { useAppState } from "@/lib/providers/state-provider";
 import { File, Folder, User, Workspace } from "@/lib/supabase/supabase.types";
 import React, {
@@ -246,7 +250,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
           }
         }
         setSaving(false);
-      }, 850);
+      }, UPDATE_USER_CHANGES_TIMER_VALUE);
       socket.emit("send-changes", delta, fileId);
     };
     quill.on("text-change", quillHandler);

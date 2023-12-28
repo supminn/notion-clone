@@ -139,7 +139,8 @@ export const PRICING_CARDS = [
 
 export const PRICING_PLANS = { pro: "Pro Plan", free: "Free Plan" };
 export const MAX_FOLDERS_FREE_PLAN = 3;
-export const TIMEOUT_VALUE = 500;
+export const UPDATE_ONCHANGE_TIMER_VALUE = 500;
+export const UPDATE_USER_CHANGES_TIMER_VALUE = 850;
 
 export const TOOLBAR_OPTIONS = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
