@@ -1,8 +1,10 @@
+import { Menu } from "lucide-react";
 import client1 from "../../public/client1.png";
 import client2 from "../../public/client2.png";
 import client3 from "../../public/client3.png";
 import client4 from "../../public/client4.png";
 import client5 from "../../public/client5.png";
+import PageIcon from "@/components/icons/PageIcon";
 
 export const CLIENTS = [
   { alt: "client1", logo: client1 },
@@ -162,31 +164,15 @@ export const TOOLBAR_OPTIONS = [
   ["clean"], // remove formatting button
 ];
 
-export const DUMMY_USER_DATA = [
+export const nativeNavigations = [
   {
-    id: "1",
-    email: "user1@example.com",
-    fullName: "User One",
-    avatarUrl: "",
-    billingAddress: {
-      /* billing address data */
-    },
-    paymentMethod: {
-      /* payment method data */
-    },
-    updatedAt: "2023-12-01T10:30:00Z",
+    title: "Sidebar",
+    id: "sidebar",
+    customIcon: Menu,
   },
   {
-    id: "2",
-    email: "genny@example.com",
-    fullName: "Geny",
-    avatarUrl: "",
-    billingAddress: {
-      /* billing address data */
-    },
-    paymentMethod: {
-      /* payment method data */
-    },
-    updatedAt: "2023-12-02T11:45:00Z",
+    title: "Pages",
+    id: "pages",
+    customIcon: PageIcon,
   },
-];
+] as const;
