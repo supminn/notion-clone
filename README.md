@@ -108,6 +108,17 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - Create `avatars` and `file-banner` storages in supabase and access corresponding data from there.
 - Close upload banner modal after upload
 - Understand [this](https://youtu.be/A3l6YYkXzzg?t=31556) point that is made. `details` would swap between what we have locally and what is on the server. Initially, it would set the data from the server.
+
   > We do not broadcast other user's change from socket, but instead fetch it from the server using a `useEffect.
   > If we use only socket, then these changes would be updated locally and not the server
   > If we use both, the data would be updated through the socket as well as the data that is coming from the server.
+
+## My Issue
+
+- [Next steps](https://youtu.be/A3l6YYkXzzg?t=34893) have to be completed. Facing some issue w.r.t sockets.
+
+```bash
+Compiled /api/socket in 91ms (62 modules)
+Error handling upgrade request TypeError: Cannot read properties of undefined (reading 'bind')
+    at DevServer.handleRequestImpl (/Users/supriyam/Documents/Personal/notion-clone/node_modules/next/dist/server/base-server.js:459:50)
+```
