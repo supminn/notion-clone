@@ -194,7 +194,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
       if (dirType === "workspace") {
         const { data, error } = await getWorkspaceDetails(fileId);
         if (error || !data) return router.replace("/dashboard");
-        if (!workspaceId || quill === null) return;
+        if (!data[0] || quill === null) return;
         if (!data[0].data) return;
         quill.setContents(JSON.parse(data[0].data || ""));
         await updateWorkspaceStateAndDb({
@@ -347,7 +347,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
     const socketHandler = (range: any, roomId: string, cursorId: string) => {
       if (roomId === fileId) {
         const cursorToMove = localCursors.find(
-          (data: any) => data.cursors?.[0]?.id === cursorId
+          (data: any) => data.cursors()?.[0]?.id === cursorId
         );
         if (cursorToMove) {
           cursorToMove.moveCursor(cursorId, range);
