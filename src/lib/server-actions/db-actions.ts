@@ -22,17 +22,19 @@ export const updateWorkspaceStateAndDb = async ({
     payload: { workspace: data, workspaceId },
   });
   const { error: err } = await updateWorkspace(data, workspaceId);
-  if (err) {
-    toast({
-      title: "Error",
-      variant: "destructive",
-      description: error ?? "",
-    });
-  } else {
-    toast({
-      title: "Success",
-      description: success ?? "",
-    });
+  if (error && success) {
+    if (err) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: error ?? "",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: success ?? "",
+      });
+    }
   }
 };
 
@@ -57,17 +59,19 @@ export const updateFolderStateAndDb = async ({
     payload: { folder: data, workspaceId, folderId },
   });
   const { error: err } = await updateFolder(data, folderId);
-  if (err) {
-    toast({
-      title: "Error",
-      variant: "destructive",
-      description: error ?? "",
-    });
-  } else {
-    toast({
-      title: "Success",
-      description: success ?? "",
-    });
+  if (error && success) {
+    if (err) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: error ?? "",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: success ?? "",
+      });
+    }
   }
 };
 
@@ -94,16 +98,18 @@ export const updateFileStateAndDb = async ({
     payload: { file: data, workspaceId, folderId, fileId },
   });
   const { error: err } = await updateFile(data, fileId);
-  if (err) {
-    toast({
-      title: "Error",
-      variant: "destructive",
-      description: error ?? "",
-    });
-  } else {
-    toast({
-      title: "Success",
-      description: success ?? "",
-    });
+  if (error && success) {
+    if (err) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: error ?? "",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: success ?? "",
+      });
+    }
   }
 };

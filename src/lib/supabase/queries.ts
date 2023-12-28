@@ -11,7 +11,6 @@ import {
 import db from "./db";
 import { File, Folder, Subscription, User, Workspace } from "./supabase.types";
 import { and, eq, ilike, notExists } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 
 export const getUserSubscriptionStatus = async (userId: string) => {
   try {
@@ -179,6 +178,25 @@ export const getSharedWorkspaces = async (userId: string) => {
   return sharedWorkspaces;
 };
 
+export const getCollaborators = async (workspaceId: string) => {
+  const response = await db
+    .select()
+    .from(collaborators)
+    .where(eq(collaborators.workspaceId, workspaceId));
+  if (!response.length) return;
+  // check if all the users in the collaborator list exists.
+  const userInformation: Promise<User | undefined>[] = response.map(
+    async (collaborator) => {
+      const exists = await db.query.users.findFirst({
+        where: (user, { eq }) => eq(user.id, collaborator.userId),
+      });
+      return exists;
+    }
+  );
+  const resolvedUsers = await Promise.all(userInformation);
+  // filter only the existing users as collaborators
+  return resolvedUsers.filter(Boolean) as User[];
+};
 export const addCollaborators = async (users: User[], workspaceId: string) => {
   const response = users.forEach(async (user: User) => {
     const userExists = await db.query.collaborators.findFirst({
@@ -314,7 +332,6 @@ export const updateWorkspace = async (
       .update(workspaces)
       .set(workspace)
       .where(eq(workspaces.id, workspaceId));
-    revalidatePath(`/dashboard/${workspaceId}`);
     return { data: response, error: null };
   } catch (error) {
     console.log("Error in updateWorkspace", error);

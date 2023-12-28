@@ -9,6 +9,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import {
   addCollaborators,
+  getCollaborators,
   removeCollaborators,
   updateWorkspace,
 } from "@/lib/supabase/queries";
@@ -28,6 +29,15 @@ import CollaboratorSearch from "../global/CollaboratorSearch";
 import { Alert, AlertDescription } from "../ui/alert";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 import { updateWorkspaceStateAndDb } from "@/lib/server-actions/db-actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
 
 const SettingsForm = () => {
   const supabase = createClientComponentClient();
@@ -53,7 +63,7 @@ const SettingsForm = () => {
     //     setOpen(true);
     //     return
     // }
-    await addCollaborators(collaborators, workspaceId);
+    await addCollaborators([user], workspaceId);
     setCollaborators((prev) => [...prev, user]);
     router.refresh();
   };
@@ -131,16 +141,46 @@ const SettingsForm = () => {
     router.replace(`/dashboard`);
   };
 
-  // Fetching avatar details from supabase storage
-  // Get workspace details
-  // Get all collaborators
+  const onClickAlertConfirm = async () => {
+    if (!workspaceId) return;
+    if (collaborators.length > 0) {
+      await removeCollaborators(collaborators, workspaceId);
+    }
+    setPermissions("private");
+    setOpenAlertMessage(false);
+    router.refresh();
+  };
 
+  const onPermissionChange = (value: string) => {
+    if (value === "private") {
+      setOpenAlertMessage(true);
+    } else {
+      setPermissions(value);
+    }
+  };
+
+  // Fetching avatar details from supabase storage
+  // TODO:
+  // Get workspace details
   useEffect(() => {
     const showingWorkspace = state.workspaces.find(
       (workspace) => workspace.id === workspaceId
     );
     if (showingWorkspace) setWorkspaceDetails(showingWorkspace);
   }, [workspaceId, state.workspaces]);
+
+  // Get all collaborators
+  useEffect(() => {
+    if (!workspaceId) return;
+    const fetchCollaborators = async () => {
+      const response = await getCollaborators(workspaceId);
+      if (response?.length) {
+        setPermissions("shared");
+        setCollaborators(response);
+      }
+    };
+    fetchCollaborators();
+  }, [workspaceId]);
 
   return (
     <div className="flex gap-4 flex-col">
@@ -157,7 +197,7 @@ const SettingsForm = () => {
         </Label>
         <Input
           name="workspaceName"
-          value={workspaceDetails ? workspaceDetails.title : ""}
+          value={workspaceDetails?.title ?? ""}
           placeholder="Workspace Name"
           onChange={workspaceNameChange}
         />
@@ -180,10 +220,7 @@ const SettingsForm = () => {
         <Label htmlFor="permissions" className="mb-4">
           Permissions
         </Label>
-        <Select
-          onValueChange={(value) => setPermissions(value)}
-          defaultValue={permissions}
-        >
+        <Select onValueChange={onPermissionChange} value={permissions}>
           <SelectTrigger className="w-full h-26 -mt-3">
             <SelectValue />
           </SelectTrigger>
@@ -297,6 +334,25 @@ const SettingsForm = () => {
             Delete Workspace
           </Button>
         </Alert>
+        <AlertDialog open={openAlertMessage}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDescription>
+                Changing a shared workspace to a private workspace will remove
+                all collaborators permanantly
+              </AlertDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setOpenAlertMessage(false)}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={onClickAlertConfirm}>
+                Confirm
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
