@@ -18,6 +18,7 @@ import { AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "../ui/button";
 import { getUsersFromSearch } from "@/lib/supabase/queries";
 import { UPDATE_ONCHANGE_TIMER_VALUE } from "@/lib/contants";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 interface CollaboratorSearchProps {
   existingCollaborators: User[] | [];
@@ -29,6 +30,7 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
   addCollaborator,
   children,
 }) => {
+  const supabase = createClientComponentClient();
   const [searchResults, setSearchResults] = useState<User[] | []>([]);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const { user } = useSupabaseUser();
@@ -86,8 +88,15 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
               >
                 <div className="flex gap-4 items-center">
                   <Avatar className="w-8 h-8">
-                    {/* TODO: Fetch avatars from storage and display it here. */}
-                    <AvatarImage src="/avatars/7.png" />
+                    <AvatarImage
+                      src={
+                        user.avatarUrl
+                          ? supabase.storage
+                              .from("avatars")
+                              .getPublicUrl(user.avatarUrl).data.publicUrl
+                          : "/avatars/7.png"
+                      }
+                    />
                     <AvatarFallback>AV</AvatarFallback>
                   </Avatar>
                   <div

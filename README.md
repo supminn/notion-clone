@@ -100,10 +100,12 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - QuillJS, delta -> to decide which real-time cursor should take precedence. **Read more about how things work**
 - You cannot use an API folder in a Next.js application while using Socket.IO because Socket.IO requires a server to handle WebSocket connections, and Next.js doesn't support server-side code in its API routes. While Socket.IO requires a persistent server to handle WebSocket connections, the serverless functions used in the api folder are not suitable for maintaining WebSocket connections.
 - We create our own quill-cursor module to track the user's cursor at real time.
+- Supabase -> Database -> Replication -> Tables -> Enable [folders, files, workspaces, collaborators]
 
 ## Todo
 
 - Add global loader while changing workspaces, login or signup page.
+- Add other details input in sign up form. Add these changes within SettingsForm to update the user info.
 - If folder is `inTrash` make sure that the files within this folder are also updated to `isTrash`. Similarly, the same approach for workspace too. (giving some TypeScript error)
 - Create `avatars` and `file-banner` storages in supabase and access corresponding data from there.
 - Close upload banner modal after upload
@@ -116,9 +118,17 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 ## My Issue
 
 - [Next steps](https://youtu.be/A3l6YYkXzzg?t=34893) have to be completed. Facing some issue w.r.t sockets.
+- Issue was with `@types/quill` version.
 
 ```bash
 Compiled /api/socket in 91ms (62 modules)
 Error handling upgrade request TypeError: Cannot read properties of undefined (reading 'bind')
     at DevServer.handleRequestImpl (/Users/supriyam/Documents/Personal/notion-clone/node_modules/next/dist/server/base-server.js:459:50)
 ```
+
+## Test
+
+- User profile pic update
+- Collaborators profile pic load
+- On delete of any file or folder, redirect to parent
+- If findMatchingFile util is working fine

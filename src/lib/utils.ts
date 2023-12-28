@@ -34,10 +34,13 @@ export const getSelectedDirectory = ({
 }: getSelectedDirectoryType) => {
   let selectedDir;
   if (type === "file") {
-    selectedDir = state.workspaces
-      .find((workspace) => workspace.id === workspaceId)
-      ?.folders.find((folder) => folder.id === folderId)
-      ?.files.find((file) => file.id === fileId);
+    if (!workspaceId || !folderId || !fileId) return;
+    selectedDir = findMatchingFile(
+      state.workspaces,
+      workspaceId,
+      folderId,
+      fileId
+    );
   }
   if (type === "folder") {
     selectedDir = state.workspaces
@@ -49,3 +52,16 @@ export const getSelectedDirectory = ({
   }
   return selectedDir;
 };
+
+export const findMatchingFile = (
+  workspaces: appWorkspacesType[],
+  workspaceId: string,
+  folderId: string,
+  fileId: string
+) =>
+  workspaces
+    .find((workspace) => workspace.id === workspaceId)
+    ?.folders.find((folder) => folder.id === folderId)
+    ?.files.find((file) => file.id === fileId);
+
+// TODO: need to create for folders and workspaces

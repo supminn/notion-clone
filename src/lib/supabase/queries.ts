@@ -353,3 +353,31 @@ export const findUser = async (userId: string) => {
   }
   */
 };
+
+export const getUserDetails = async (userId: string) => {
+  const isValid = validate(userId);
+  if (!isValid) return { data: [], error: "Error in validate" };
+  try {
+    const userData = (await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1)) as User[];
+    return { data: userData, error: null };
+  } catch (error) {
+    console.log("Error in getFolderDetails", error);
+    return { data: null, error: "Error in getFolderDetails" };
+  }
+};
+export const updateUser = async (user: Partial<User>, userId: string) => {
+  try {
+    const response = await db
+      .update(users)
+      .set(user)
+      .where(eq(users.id, userId));
+    return { data: response, error: null };
+  } catch (error) {
+    console.log("Error in updateFolder", error);
+    return { data: null, error: "Error in updateFolder" };
+  }
+};

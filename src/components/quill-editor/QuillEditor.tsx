@@ -415,6 +415,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
           description: "Deleted file successfully",
         });
       }
+      router.replace(`/dashboard/${workspaceId}/${folderId}`);
     }
     if (dirType === "folder") {
       if (!workspaceId) return;
@@ -435,6 +436,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
           description: "Deleted folder successfully",
         });
       }
+      router.replace(`/dashboard/${workspaceId}`);
     }
     if (dirType === "workspace") {
       dispatch({
@@ -454,6 +456,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
           description: "Deleted workspace successfully",
         });
       }
+      router.replace(`/dashboard`);
     }
   };
 

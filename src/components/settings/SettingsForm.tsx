@@ -1,16 +1,26 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useAppState } from "@/lib/providers/state-provider";
 import { User, Workspace } from "@/lib/supabase/supabase.types";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Briefcase, Lock, Plus, Share } from "lucide-react";
+import {
+  Briefcase,
+  CreditCard,
+  Lock,
+  Plus,
+  Share,
+  UserIcon,
+} from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import {
   addCollaborators,
+  findUser,
   getCollaborators,
+  getUserDetails,
   removeCollaborators,
+  updateUser,
   updateWorkspace,
 } from "@/lib/supabase/queries";
 import { v4 } from "uuid";
@@ -38,11 +48,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
+import { Separator } from "../ui/separator";
+import ProfileIcon from "../icons/ProfileIcon";
 
 const SettingsForm = () => {
   const supabase = createClientComponentClient();
   const { state, dispatch, workspaceId } = useAppState();
-  const { user } = useSupabaseUser();
+  const { user, subscription } = useSupabaseUser();
   const router = useRouter();
   const titleTimerRef = useRef<ReturnType<typeof setTimeout>>(); // debounce timer to make the title change
   // TODO: convert them to useReducer approach
@@ -52,6 +64,16 @@ const SettingsForm = () => {
   const [workspaceDetails, setWorkspaceDetails] = useState<Workspace>();
   const [uploadingProfilePic, setUploadingProfilePic] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+
+  const avatarUrl = useMemo(() => {
+    if (!user?.id) return "";
+    (async () => {
+      const response = await findUser(user.id);
+      if (!response || !response.avatarUrl) return "";
+      return supabase.storage.from("avatars").getPublicUrl(response.avatarUrl)
+        .data.publicUrl;
+    })();
+  }, [user, supabase.storage]);
 
   // Payment portal - billing options and its redirect
 
@@ -128,6 +150,35 @@ const SettingsForm = () => {
     setUploadingLogo(false);
   };
 
+  const uploadProfilePicture = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (!workspaceId || !user) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const uuid = v4();
+    setUploadingProfilePic(true);
+    // supabse suggests to create a new line item each time than to replace the existing one. Storage takes some time to update the existing data.
+    const { data, error } = await supabase.storage
+      .from("avatars")
+      .upload(`userPic.${uuid}`, file, {
+        cacheControl: "3600",
+        upsert: true,
+      });
+    if (error) throw new Error("Unable to upload file to workspace logos");
+    if (data) {
+      const { data: userData } = await getUserDetails(user.id);
+      if (userData && userData[0]) {
+        const prevPicUrl = userData[0].avatarUrl;
+        if (prevPicUrl) {
+          await supabase.storage.from("avatars").remove([prevPicUrl]);
+        }
+      }
+      await updateUser({ avatarUrl: data.path }, user.id);
+      setUploadingProfilePic(false);
+    }
+  };
+
   // onClickAlerts
   const onDeleteHandler = async () => {
     if (!workspaceId) return;
@@ -159,8 +210,8 @@ const SettingsForm = () => {
     }
   };
 
-  // Fetching avatar details from supabase storage
-  // TODO:
+  // TODO: Fetching avatar details from supabase storage
+
   // Get workspace details
   useEffect(() => {
     const showingWorkspace = state.workspaces.find(
@@ -187,7 +238,7 @@ const SettingsForm = () => {
       <p className="flex items-center gap-2 mt-6">
         <Briefcase size={20} /> Workspace
       </p>
-      <hr />
+      <Separator />
       <div className="flex flex-col gap-2">
         <Label
           htmlFor="workspaceName"
@@ -281,7 +332,16 @@ const SettingsForm = () => {
                     >
                       <div className="gap-4 flex items-center">
                         <Avatar>
-                          <AvatarImage src="/avatars/5.png" />
+                          <AvatarImage
+                            src={
+                              collaborator.avatarUrl
+                                ? supabase.storage
+                                    .from("avatars")
+                                    .getPublicUrl(collaborator.avatarUrl).data
+                                    .publicUrl
+                                : "/avatars/5.png"
+                            }
+                          />
                           <AvatarFallback>AV</AvatarFallback>
                         </Avatar>
                         <div
@@ -334,6 +394,46 @@ const SettingsForm = () => {
             Delete Workspace
           </Button>
         </Alert>
+        <p className="flex items-center gap-2 mt-6">
+          <UserIcon size={20} /> Profile
+        </p>
+        <Separator />
+        <div className="flex items-center">
+          <Avatar>
+            <AvatarImage src={avatarUrl} />
+            <AvatarFallback>
+              <ProfileIcon />
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col ml-6">
+            <small className="text-muted-foreground cursor-not-allowed">
+              {user ? user.email : ""}
+            </small>
+            <Label
+              htmlFor="profilePicture"
+              className="text-sm text-muted-foreground"
+            >
+              Profile Picture
+            </Label>
+            <Input
+              type="file"
+              accept="image/*"
+              id="profilePicture"
+              placeholder="Profile Picture"
+              onChange={uploadProfilePicture}
+              disabled={uploadingProfilePic}
+            />
+          </div>
+        </div>
+        <p className="flex items-center gap-2 mt-6">
+          <CreditCard size={20} />
+          Billing & Plan
+        </p>
+        <Separator />
+        <p className="text-muted-foreground">
+          You are currently on a{" "}
+          {subscription?.status === "active" ? "Pro" : "Free"} Plan
+        </p>
         <AlertDialog open={openAlertMessage}>
           <AlertDialogContent>
             <AlertDialogHeader>
