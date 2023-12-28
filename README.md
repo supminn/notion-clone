@@ -103,7 +103,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 
 ## Todo
 
-- Add loader while changing workspaces, login or signup page
+- Add global loader while changing workspaces, login or signup page.
 - If folder is `inTrash` make sure that the files within this folder are also updated to `isTrash`. Similarly, the same approach for workspace too. (giving some TypeScript error)
 - Create `avatars` and `file-banner` storages in supabase and access corresponding data from there.
 - Close upload banner modal after upload
