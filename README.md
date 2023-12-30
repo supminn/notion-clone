@@ -126,6 +126,8 @@ Error handling upgrade request TypeError: Cannot read properties of undefined (r
     at DevServer.handleRequestImpl (/Users/supriyam/Documents/Personal/notion-clone/node_modules/next/dist/server/base-server.js:459:50)
 ```
 
+- `url/dashboard/[workspaceId]` API call is happening redundantly in the network tab.
+
 ## Test
 
 - User profile pic update
