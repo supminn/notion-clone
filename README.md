@@ -104,6 +104,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 
 ## Todo
 
+- Add .env to gitIgnore and remove from Github
 - Add global loader while changing workspaces, login or signup page.
 - Add other details input in sign up form. Add these changes within SettingsForm to update the user info.
 - If folder is `inTrash` make sure that the files within this folder are also updated to `isTrash`. Similarly, the same approach for workspace too. (giving some TypeScript error)
