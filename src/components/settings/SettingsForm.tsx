@@ -7,7 +7,9 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import {
   Briefcase,
   CreditCard,
+  ExternalLink,
   Lock,
+  LogOut,
   Plus,
   Share,
   UserIcon,
@@ -50,11 +52,15 @@ import {
 } from "../ui/alert-dialog";
 import { Separator } from "../ui/separator";
 import ProfileIcon from "../icons/ProfileIcon";
+import Link from "next/link";
+import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";
+import LogoutButton from "../global/LogoutButton";
 
 const SettingsForm = () => {
   const supabase = createClientComponentClient();
   const { state, dispatch, workspaceId } = useAppState();
   const { user, subscription } = useSupabaseUser();
+  const { setOpen } = useSubscriptionModal();
   const router = useRouter();
   const titleTimerRef = useRef<ReturnType<typeof setTimeout>>(); // debounce timer to make the title change
   // TODO: convert them to useReducer approach
@@ -264,10 +270,13 @@ const SettingsForm = () => {
           accept="image/*"
           placeholder="Workspace Logo"
           onChange={workspaceLogoChange}
-          disabled={uploadingLogo}
-          // subscription check
+          disabled={uploadingLogo || subscription?.status !== "active"}
         />
-        {/* subscriptions */}
+        {subscription?.status !== "active" && (
+          <small className="text-muted-foreground">
+            To customize your workspace, you need to be on a Pro Plan
+          </small>
+        )}
         <Label htmlFor="permissions" className="mb-4">
           Permissions
         </Label>
@@ -378,8 +387,8 @@ const SettingsForm = () => {
         <small className="text-sm text-muted-foreground">
           Changes would be auto-saved.
         </small>
-        <hr />
-        <Alert variant="destructive">
+        <Separator />
+        <Alert variant="destructive" className="mt-4">
           <AlertDescription>
             Warning! Deleting your workspace will permanently delete all the
             data related to this workspace
@@ -394,9 +403,16 @@ const SettingsForm = () => {
             Delete Workspace
           </Button>
         </Alert>
-        <p className="flex items-center gap-2 mt-6">
-          <UserIcon size={20} /> Profile
-        </p>
+        <div className="flex justify-between mt-3">
+          <p className="flex items-center gap-2">
+            <UserIcon size={20} /> Profile
+          </p>
+          <LogoutButton>
+            <div className="flex items-center">
+              <LogOut size={20} />
+            </div>
+          </LogoutButton>
+        </div>
         <Separator />
         <div className="flex items-center">
           <Avatar>
@@ -425,7 +441,7 @@ const SettingsForm = () => {
             />
           </div>
         </div>
-        <p className="flex items-center gap-2 mt-6">
+        <p className="flex items-center gap-2 mt-4">
           <CreditCard size={20} />
           Billing & Plan
         </p>
@@ -434,6 +450,39 @@ const SettingsForm = () => {
           You are currently on a{" "}
           {subscription?.status === "active" ? "Pro" : "Free"} Plan
         </p>
+        <Link
+          href="/"
+          target="_blank"
+          className="text-muted-foreground flex flex-row items-center"
+        >
+          View Plans <ExternalLink size={16} className="ml-1" />
+        </Link>
+        {subscription?.status === "active" ? (
+          <div>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              // disabled={loadingPortal}
+              className="text-sm"
+              // onClick={redirectToCustomerPortal}
+            >
+              Manage Subscription
+            </Button>
+          </div>
+        ) : (
+          <div>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              className="text-sm"
+              onClick={() => setOpen(true)}
+            >
+              Start Plan
+            </Button>
+          </div>
+        )}
         <AlertDialog open={openAlertMessage}>
           <AlertDialogContent>
             <AlertDialogHeader>

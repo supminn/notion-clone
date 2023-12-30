@@ -154,6 +154,7 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
                 id="logo"
                 type="file"
                 accept="image/*"
+                disabled={subscription?.status !== "active"}
                 placeholder="Workspace Logo"
                 {...register("logo", {
                   required: false,
@@ -164,7 +165,7 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
               </small>
               {subscription?.status !== "active" && (
                 <small className="text-muted-foreground block">
-                  To customise your workspace, ou need to be on a Pro Plan
+                  To customise your workspace, you need to be on a Pro Plan
                 </small>
               )}
             </div>
