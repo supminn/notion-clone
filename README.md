@@ -119,6 +119,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 
 - Make page title editable in `QuillEditor`.
 - Go through [vercel issue](https://github.com/vercel/next.js/issues/49373) to find a better fix for this temp.
+- Setup a row level policy for all the tables in supabase. [Timestamp](https://youtu.be/A3l6YYkXzzg?t=41848)
 
 ### CHALLENGES
 
@@ -141,6 +142,7 @@ Error handling upgrade request TypeError: Cannot read properties of undefined (r
 
 - `url/dashboard/[workspaceId]` API call is happening redundantly in the network tab.
 - [Stripe checkout](https://youtu.be/A3l6YYkXzzg?t=40573) API error. Not showing the right message to find the issue.
+- Change the NEXT_PUBLIC_SITE_URL after deployment.
 
 ## Test
 
