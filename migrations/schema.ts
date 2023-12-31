@@ -10,7 +10,7 @@ import {
   bigint,
   integer,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 export const keyStatus = pgEnum("key_status", [
   "expired",
@@ -211,3 +211,16 @@ export const collaborators = pgTable("collaborators", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
 });
+
+// creating a many to one relation
+export const productsRelations = relations(products, ({ many }) => ({
+  prices: many(prices),
+}));
+
+// creating a one to many relation
+export const priceRelations = relations(prices, ({ one }) => ({
+  product: one(products, {
+    fields: [prices.productId],
+    references: [products.id],
+  }),
+}));

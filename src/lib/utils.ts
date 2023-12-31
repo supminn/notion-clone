@@ -47,7 +47,8 @@ export const postData = async ({
     body: JSON.stringify(data),
   });
   if (!res.ok) {
-    console.log("Error in postData", { url, data, res });
+    const errorMessage = await res.text();
+    console.log("Error in postData", { url, data, res, errorMessage });
     throw Error(res.statusText);
   }
   return res.json();

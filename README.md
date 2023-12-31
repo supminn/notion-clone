@@ -128,6 +128,7 @@ Error handling upgrade request TypeError: Cannot read properties of undefined (r
 ```
 
 - `url/dashboard/[workspaceId]` API call is happening redundantly in the network tab.
+- [Stripe checkout](https://youtu.be/A3l6YYkXzzg?t=40573) API error. Not showing the right message to find the issue.
 
 ## Test
 

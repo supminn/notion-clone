@@ -60,35 +60,37 @@ const FoldersDropDownList: FC<FoldersDropDownListProps> = ({
     if (folders.length >= 3 && !subscription) {
       // show a modal to upgrade to Pro
       setOpen(true);
-    }
-    const newFolder: Folder = {
-      data: null,
-      id: v4(),
-      createdAt: new Date().toISOString(),
-      title: "Untitled",
-      iconId: "📁",
-      inTrash: null,
-      workspaceId,
-      bannerUrl: "",
-    };
-    dispatch({
-      type: "ADD_FOLDER",
-      payload: { workspaceId, folder: { ...newFolder, files: [] } },
-    });
-    const { error } = await createFolder(newFolder);
-    if (error) {
-      toast({
-        title: "Error",
-        variant: "destructive",
-        description: "Could not create the folder",
-      });
     } else {
-      toast({
-        title: "Success",
-        description: "Created the folder",
+      const newFolder: Folder = {
+        data: null,
+        id: v4(),
+        createdAt: new Date().toISOString(),
+        title: "Untitled",
+        iconId: "📁",
+        inTrash: null,
+        workspaceId,
+        bannerUrl: "",
+      };
+      dispatch({
+        type: "ADD_FOLDER",
+        payload: { workspaceId, folder: { ...newFolder, files: [] } },
       });
+      const { error } = await createFolder(newFolder);
+      if (error) {
+        toast({
+          title: "Error",
+          variant: "destructive",
+          description: "Could not create the folder",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Created the folder",
+        });
+      }
     }
   };
+
   return (
     <>
       <div
