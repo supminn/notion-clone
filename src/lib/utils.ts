@@ -37,7 +37,7 @@ export const postData = async ({
   data,
 }: {
   url: string;
-  data: { price: Price };
+  data?: { price: Price };
 }) => {
   console.log("Posting", url, data);
   const res: Response = await fetch(url, {

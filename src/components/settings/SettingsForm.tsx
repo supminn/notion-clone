@@ -55,6 +55,7 @@ import ProfileIcon from "../icons/ProfileIcon";
 import Link from "next/link";
 import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";
 import LogoutButton from "../global/LogoutButton";
+import { postData } from "@/lib/utils";
 
 const SettingsForm = () => {
   const supabase = createClientComponentClient();
@@ -70,6 +71,7 @@ const SettingsForm = () => {
   const [workspaceDetails, setWorkspaceDetails] = useState<Workspace>();
   const [uploadingProfilePic, setUploadingProfilePic] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [loadingPortal, setLoadingPortal] = useState(false);
 
   const avatarUrl = useMemo(() => {
     if (!user?.id) return "";
@@ -82,15 +84,28 @@ const SettingsForm = () => {
   }, [user, supabase.storage]);
 
   // Payment portal - billing options and its redirect
+  const redirectToCustomerPortal = async () => {
+    setLoadingPortal(true);
+    try {
+      const { url, error } = await postData({
+        url: `/api/create-portal-link`,
+      });
+      window.location.assign(url);
+    } catch (error) {
+      console.log("Error in redirectToCustomerPortal", error);
+    } finally {
+      setLoadingPortal(false);
+    }
+  };
 
   // Add collaborators
   const addCollaborator = async (user: User) => {
     if (!workspaceId) return;
     // subscription
-    // if(subscriptionStatus?.status !=='active' && collaborators.length >= 2){
-    //     setOpen(true);
-    //     return
-    // }
+    if (subscription?.status !== "active" && collaborators.length >= 2) {
+      setOpen(true);
+      return;
+    }
     await addCollaborators([user], workspaceId);
     setCollaborators((prev) => [...prev, user]);
     router.refresh();
@@ -191,7 +206,7 @@ const SettingsForm = () => {
     await updateWorkspaceStateAndDb({
       dispatch,
       workspaceId,
-      data: { inTrash: `Deleted by ${user?.id}` },
+      data: { inTrash: `Deleted by ${user?.email}` },
       error: "Could not delete the workspace",
       success: "Deleted your workspace",
     });
@@ -463,9 +478,9 @@ const SettingsForm = () => {
               type="button"
               size="sm"
               variant="outline"
-              // disabled={loadingPortal}
+              disabled={loadingPortal}
               className="text-sm"
-              // onClick={redirectToCustomerPortal}
+              onClick={redirectToCustomerPortal}
             >
               Manage Subscription
             </Button>
