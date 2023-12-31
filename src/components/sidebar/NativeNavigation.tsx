@@ -5,6 +5,7 @@ import HomeIcon from "../icons/HomeIcon";
 import SettingsIcon from "../icons/SettingsIcon";
 import TrashIcon from "../icons/TrashIcon";
 import Settings from "../settings/Settings";
+import Trash from "../trash/Trash";
 
 interface NativeNavigationProps {
   myWorkspaceId: string;
@@ -30,14 +31,11 @@ const NativeNavigation: FC<NativeNavigationProps> = ({
             <SettingsIcon /> <span>Settings</span>
           </li>
         </Settings>
-        <li>
-          <Link
-            className="group/native flex text-Neutrals/neutrals-7 transition-all gap-2"
-            href={`/dashboard/${myWorkspaceId}`}
-          >
+        <Trash>
+          <li className="group/native flex text-Neutrals/neutrals-7 transition-all gap-2">
             <TrashIcon /> <span>Trash</span>
-          </Link>
-        </li>
+          </li>
+        </Trash>
       </ul>
     </nav>
   );
