@@ -104,7 +104,7 @@ const useSupabaseRealtime = () => {
     return () => {
       channel.unsubscribe();
     };
-  }, [supabase, state, dispatch, selectedWorkspaceId]);
+  }, [supabase, state, dispatch, selectedWorkspaceId, router]);
 
   return null;
 };

@@ -101,6 +101,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
 - You cannot use an API folder in a Next.js application while using Socket.IO because Socket.IO requires a server to handle WebSocket connections, and Next.js doesn't support server-side code in its API routes. While Socket.IO requires a persistent server to handle WebSocket connections, the serverless functions used in the api folder are not suitable for maintaining WebSocket connections.
 - We create our own quill-cursor module to track the user's cursor at real time.
 - Supabase -> Database -> Replication -> Tables -> Enable [folders, files, workspaces, collaborators]
+- Socket.io does not work on vercel. So, we use Railway to deploy this app. (paid plans only)
 
 ## Todo
 
@@ -115,6 +116,16 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
   > We do not broadcast other user's change from socket, but instead fetch it from the server using a `useEffect.
   > If we use only socket, then these changes would be updated locally and not the server
   > If we use both, the data would be updated through the socket as well as the data that is coming from the server.
+
+- Make page title editable in `QuillEditor`.
+
+### CHALLENGES
+
+1 Files keeps resetting when we change between workspaces.
+2 Real-time workspaces
+3 WHEN YOU trash a folder files are also trashed but now when you try to
+4 WHEN SOMEONE IS ADDED AS A WORKSPACE COLLABORATOR THEN you need to create the real-time feature.
+5 Include number of collaborators in Plan Usage
 
 ## My Issue
 

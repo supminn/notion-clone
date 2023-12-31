@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { DialogClose } from "../ui/dialog";
 
 const TrashRestore = () => {
-  const { state, dispatch, workspaceId } = useAppState();
+  const { state, workspaceId } = useAppState();
   const [workspaces, setWorkspaces] = useState<appWorkspacesType[]>([]);
   const [folders, setFolders] = useState<appFoldersType[]>([]);
   const [files, setFiles] = useState<File[]>([]);
