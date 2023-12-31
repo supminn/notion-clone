@@ -118,6 +118,7 @@ We will use [Shadcn UI](https://ui.shadcn.com/) which is built using Radix UI to
   > If we use both, the data would be updated through the socket as well as the data that is coming from the server.
 
 - Make page title editable in `QuillEditor`.
+- Go through [vercel issue](https://github.com/vercel/next.js/issues/49373) to find a better fix for this temp.
 
 ### CHALLENGES
 
