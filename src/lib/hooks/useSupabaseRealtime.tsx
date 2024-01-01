@@ -2,8 +2,8 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect } from "react";
 import { useAppState } from "../providers/state-provider";
 import { useRouter } from "next/navigation";
-import { findMatchingFile } from "../utils";
-import { File } from "../supabase/supabase.types";
+import { findMatchingFile, findMatchingFolder } from "../utils";
+import { File, Folder } from "../supabase/supabase.types";
 
 const useSupabaseRealtime = () => {
   const supabase = createClientComponentClient();
@@ -106,9 +106,88 @@ const useSupabaseRealtime = () => {
     };
   }, [supabase, state, selectedWorkspaceId]);
 
+  useEffect(() => {
+    if (!selectedWorkspaceId) return;
+    const channel = supabase
+      .channel("db-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "folders",
+        },
+        async (payload) => {
+          if (payload.eventType === "INSERT") {
+            console.log("🟢 Received real time event");
+            const { workspace_id: workspaceId, id: folderId } = payload.new;
+            if (!findMatchingFolder(state.workspaces, workspaceId, folderId)) {
+              const newFolder: Folder = {
+                id: payload.new.id,
+                workspaceId: payload.new.workspace_id,
+                createdAt: payload.new.created_at,
+                title: payload.new.title,
+                iconId: payload.new.icon_id,
+                data: payload.new.data,
+                inTrash: payload.new.in_trash,
+                bannerUrl: payload.new.banner_url,
+              };
+              dispatch({
+                type: "ADD_FOLDER",
+                payload: {
+                  folder: { ...newFolder, files: [] },
+                  workspaceId,
+                },
+              });
+            }
+          } else if (payload.eventType === "DELETE") {
+            let workspaceId = "";
+            const fileExists = state.workspaces.some((workspace) =>
+              workspace.folders.some((folder) => {
+                if (folder.id === payload.old.id) {
+                  workspaceId = workspace.id;
+                  return true;
+                }
+              })
+            );
+            if (fileExists && workspaceId) {
+              router.replace(`/dashboard/${workspaceId}`);
+              dispatch({
+                type: "DELETE_FOLDER",
+                payload: { workspaceId, folderId: payload.old.id },
+              });
+            }
+          } else if (payload.eventType === "UPDATE") {
+            const { workspace_id: workspaceId, id: folderId } = payload.new;
+            state.workspaces.some((workspace) =>
+              workspace.folders.some((folder) => {
+                if (folder.id === payload.new.id) {
+                  dispatch({
+                    type: "UPDATE_FOLDER",
+                    payload: {
+                      workspaceId,
+                      folderId: payload.new.id,
+                      folder: {
+                        title: payload.new.title,
+                        iconId: payload.new.icon_id,
+                        inTrash: payload.new.in_trash,
+                      },
+                    },
+                  });
+                }
+              })
+            );
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [supabase, state, selectedWorkspaceId]);
+
   return null;
 };
 
 export default useSupabaseRealtime;
-
-// TODO: Need to create a similar thing for folder updates
