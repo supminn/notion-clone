@@ -206,7 +206,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
     };
 
     fetchInformation();
-  }, [fileId, workspaceId, dirType, quill, dispatch, router]);
+  }, [fileId, workspaceId, dirType, quill]);
 
   // rooms for our application
   useEffect(() => {

@@ -46,7 +46,7 @@ const FoldersDropDownList: FC<FoldersDropDownListProps> = ({
         },
       });
     }
-  }, [workspaceFolders, workspaceId, dispatch, state.workspaces]);
+  }, [workspaceFolders, workspaceId]);
 
   // update folders from global state
   useEffect(() => {
