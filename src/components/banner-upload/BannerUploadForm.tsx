@@ -17,7 +17,7 @@ import {
   updateFolderStateAndDb,
   updateWorkspaceStateAndDb,
 } from "@/lib/server-actions/db-actions";
-import { findMatchingFile } from "@/lib/utils";
+import { findMatchingFile, findMatchingFolder } from "@/lib/utils";
 
 interface BannerUploadFormProps {
   type: "workspace" | "folder" | "file";
@@ -78,9 +78,11 @@ const BannerUploadForm: FC<BannerUploadFormProps> = ({ type, id }) => {
       }
       if (type === "folder") {
         if (!workspaceId) return;
-        prevBannerId = state.workspaces
-          .find((workspace) => workspace.id === workspaceId)
-          ?.folders.find((folder) => folder.id === id)?.bannerUrl;
+        prevBannerId = findMatchingFolder(
+          state.workspaces,
+          workspaceId,
+          id
+        )?.bannerUrl;
         const filePath = await uploadBanner();
         await updateFolderStateAndDb({
           dispatch,

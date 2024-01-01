@@ -64,7 +64,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   const { user } = useSupabaseUser();
   const { socket } = useSocket();
   const [quill, setQuill] = useState<any>(null);
-  const [collaborators, setCollaborators] = useState<User[]>(); // FIXME: remove this data
+  const [collaborators, setCollaborators] = useState<User[]>();
   const [saving, setSaving] = useState(false);
   const [deletingBanner, setDeletingBanner] = useState(false);
   const [bannerUrl, setBannerUrl] = useState<string>();
@@ -206,7 +206,7 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
     };
 
     fetchInformation();
-  }, [fileId, workspaceId, dirType, quill]);
+  }, [fileId, workspaceId, dirType, quill, dispatch, router]);
 
   // rooms for our application
   useEffect(() => {

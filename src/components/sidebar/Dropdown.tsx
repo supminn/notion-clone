@@ -20,7 +20,7 @@ import {
   updateFolderStateAndDb,
 } from "@/lib/server-actions/db-actions";
 import { toast } from "../ui/use-toast";
-import { findMatchingFile } from "@/lib/utils";
+import { findMatchingFile, findMatchingFolder } from "@/lib/utils";
 
 interface DropdownProps {
   title: string;
@@ -69,10 +69,12 @@ const Dropdown: React.FC<DropdownProps> = ({ title, id, listType, iconId }) => {
 
   // Folder title synced with server and local data
   const folderTitle: string | undefined = useMemo(() => {
-    if (listType === "folder") {
-      const stateTitle = state.workspaces
-        .find((workspace) => workspace.id === workspaceId)
-        ?.folders.find((folder) => folder.id === id)?.title;
+    if (listType === "folder" && workspaceId) {
+      const stateTitle = findMatchingFolder(
+        state.workspaces,
+        workspaceId,
+        id
+      )?.title;
       if (title === stateTitle) return title;
       return stateTitle;
     }
