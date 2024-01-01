@@ -63,13 +63,14 @@ const QuillEditor: FC<QuillEditorProps> = ({ dirDetails, dirType, fileId }) => {
   const { state, workspaceId, folderId, dispatch } = useAppState();
   const { user } = useSupabaseUser();
   const { socket } = useSocket();
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  // TODO: convert them to useReducer approach
   const [quill, setQuill] = useState<any>(null);
   const [collaborators, setCollaborators] = useState<User[]>();
   const [saving, setSaving] = useState(false);
   const [deletingBanner, setDeletingBanner] = useState(false);
   const [bannerUrl, setBannerUrl] = useState<string>();
   const [localCursors, setLocalCursors] = useState<any>([]); // type 'cursor' doesn't seem to be working here
-  const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const details = useMemo(() => {
     const selectedDir = getSelectedDirectory({

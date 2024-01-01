@@ -12,6 +12,7 @@ import { Accordion } from "../ui/accordion";
 import Dropdown from "./Dropdown";
 import useSupabaseRealtime from "@/lib/hooks/useSupabaseRealtime";
 import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";
+import { MAX_FOLDERS_FREE_PLAN } from "@/lib/contants";
 
 interface FoldersDropDownListProps {
   workspaceFolders: Folder[];
@@ -57,7 +58,7 @@ const FoldersDropDownList: FC<FoldersDropDownListProps> = ({
   }, [state.workspaces, workspaceId]);
 
   const addFolderHandler = async () => {
-    if (folders.length >= 3 && !subscription) {
+    if (folders.length >= MAX_FOLDERS_FREE_PLAN && !subscription) {
       // show a modal to upgrade to Pro
       setOpen(true);
     } else {

@@ -56,6 +56,7 @@ import Link from "next/link";
 import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";
 import LogoutButton from "../global/LogoutButton";
 import { postData } from "@/lib/utils";
+import { MAX_COLLABORATOR_FREE_PLAN } from "@/lib/contants";
 
 const SettingsForm = () => {
   const supabase = createClientComponentClient();
@@ -65,7 +66,7 @@ const SettingsForm = () => {
   const router = useRouter();
   const titleTimerRef = useRef<ReturnType<typeof setTimeout>>(); // debounce timer to make the title change
   // TODO: convert them to useReducer approach
-  const [permissions, setPermissions] = useState("private"); // This should ideally be fetched by checking the workspace details
+  const [permissions, setPermissions] = useState("private");
   const [collaborators, setCollaborators] = useState<User[]>([]);
   const [openAlertMessage, setOpenAlertMessage] = useState(false);
   const [workspaceDetails, setWorkspaceDetails] = useState<Workspace>();
@@ -102,7 +103,10 @@ const SettingsForm = () => {
   const addCollaborator = async (user: User) => {
     if (!workspaceId) return;
     // subscription
-    if (subscription?.status !== "active" && collaborators.length >= 2) {
+    if (
+      subscription?.status !== "active" &&
+      collaborators.length >= MAX_COLLABORATOR_FREE_PLAN
+    ) {
       setOpen(true);
       return;
     }
@@ -230,8 +234,6 @@ const SettingsForm = () => {
       setPermissions(value);
     }
   };
-
-  // TODO: Fetching avatar details from supabase storage
 
   // Get workspace details
   useEffect(() => {

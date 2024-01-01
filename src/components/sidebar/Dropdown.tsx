@@ -68,6 +68,7 @@ const Dropdown: React.FC<DropdownProps> = ({ title, id, listType, iconId }) => {
   );
 
   // Folder title synced with server and local data
+  // handles not to change the title if empty string is passed
   const folderTitle: string | undefined = useMemo(() => {
     if (listType === "folder" && workspaceId) {
       const stateTitle = findMatchingFolder(
@@ -142,7 +143,6 @@ const Dropdown: React.FC<DropdownProps> = ({ title, id, listType, iconId }) => {
 
   // Blur the dropdown when the user clicks outside. This would also save the changes
   const handleBlur = async () => {
-    // TODO: handle not to change the title if empty string is passed
     if (!isEditting) return;
     setIsEditting(false);
     if (listType === "folder") {
